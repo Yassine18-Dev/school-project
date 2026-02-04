@@ -1,0 +1,19 @@
+{% extends 'base.html.twig' %}
+{% block title %}Admin{% endblock %}
+{% block container_class %}wide{% endblock %}
+
+{% block body %}
+<h1>Admin Dashboard</h1>
+<p class="subtitle">UI-only administration (use ?as=admin)</p>
+
+<div class="grid2">
+    <div>
+        <span class="badge">Users: {{ stats.users }}</span>
+        <span class="badge">Reports: {{ stats.reports }}</span>
+        <span class="badge">Active Today: {{ stats.activeToday }}</span>
+    </div>
+    <div style="text-align:right;">
+        <a class="badge" href="/admin/users?as=admin">Go to Users Management</a>
+    </div>
+</div>
+{% endblock %}

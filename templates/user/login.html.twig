@@ -1,0 +1,22 @@
+{% extends 'base.html.twig' %}
+{% block title %}Login{% endblock %}
+
+{% block body %}
+<h1>Login</h1>
+<p class="subtitle">Access your ArenaMind account</p>
+
+<form>
+    <label>Email</label>
+    <input type="email" placeholder="player@email.com" required>
+
+    <label>Password</label>
+    <input type="password" placeholder="••••••••" required>
+
+    <button>Login</button>
+</form>
+
+<div class="link">
+    <a href="/forgot-password">Forgot password?</a><br>
+    New here? <a href="/register">Create account</a>
+</div>
+{% endblock %}

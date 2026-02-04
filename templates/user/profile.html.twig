@@ -1,0 +1,25 @@
+{% extends 'base.html.twig' %}
+{% block title %}Profile{% endblock %}
+
+{% block body %}
+<h1>My Profile</h1>
+<p class="subtitle">Personal information</p>
+
+<p><strong>Username:</strong> {{ user.username }}</p>
+<p><strong>Email:</strong> {{ user.email }}</p>
+
+<div style="margin:14px 0">
+    <span class="badge">Role: {{ user.role }}</span>
+    <span class="badge">Status: {{ user.status }}</span>
+</div>
+
+<p class="subtitle">
+    Registered: {{ user.registeredAt }}<br>
+    Last activity: {{ user.lastActivity }}
+</p>
+
+<div class="link">
+    <a href="/profile/edit">Edit profile</a> •
+    <a href="/profile?as=admin">Simulate Admin</a>
+</div>
+{% endblock %}

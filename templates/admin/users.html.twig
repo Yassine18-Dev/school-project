@@ -1,0 +1,36 @@
+{% extends 'base.html.twig' %}
+{% block title %}Admin • Users{% endblock %}
+{% block container_class %}wide{% endblock %}
+
+{% block body %}
+<h1>Users Management</h1>
+<p class="subtitle">Suspend / Ban / Activate (UI-only)</p>
+
+<table>
+    <thead>
+        <tr>
+            <th>User</th><th>Email</th><th>Role</th><th>Status</th><th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+    {% for u in users %}
+        <tr>
+            <td><strong>{{ u.username }}</strong></td>
+            <td>{{ u.email }}</td>
+            <td><span class="badge">{{ u.role }}</span></td>
+            <td><span class="badge">{{ u.status }}</span></td>
+            <td>
+                <a class="badge" href="/admin/users/{{ u.id }}?as=admin">View</a>
+                <a class="badge" href="/admin/users?as=admin&action=activate&id={{ u.id }}">Activate</a>
+                <a class="badge" href="/admin/users?as=admin&action=suspend&id={{ u.id }}">Suspend</a>
+                <a class="badge" href="/admin/users?as=admin&action=ban&id={{ u.id }}">Ban</a>
+            </td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+
+<div class="link">
+    <a href="/admin?as=admin">Back to Admin</a>
+</div>
+{% endblock %}
