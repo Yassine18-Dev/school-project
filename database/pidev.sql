@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Hôte : 127.0.0.1:3307
--- Généré le : mer. 04 fév. 2026 à 20:40
+-- Généré le : sam. 07 fév. 2026 à 16:08
 -- Version du serveur : 10.4.32-MariaDB
 -- Version de PHP : 8.2.12
 
@@ -33,29 +33,6 @@ CREATE TABLE `doctrine_migration_versions` (
   `execution_time` int(11) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
---
--- Déchargement des données de la table `doctrine_migration_versions`
---
-
-INSERT INTO `doctrine_migration_versions` (`version`, `executed_at`, `execution_time`) VALUES
-('DoctrineMigrations\\Version20260202200322', '2026-02-03 10:01:07', 107);
-
--- --------------------------------------------------------
-
---
--- Structure de la table `messenger_messages`
---
-
-CREATE TABLE `messenger_messages` (
-  `id` bigint(20) NOT NULL,
-  `body` longtext NOT NULL,
-  `headers` longtext NOT NULL,
-  `queue_name` varchar(190) NOT NULL,
-  `created_at` datetime NOT NULL,
-  `available_at` datetime NOT NULL,
-  `delivered_at` datetime DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
 -- --------------------------------------------------------
 
 --
@@ -65,12 +42,26 @@ CREATE TABLE `messenger_messages` (
 CREATE TABLE `user` (
   `id` int(11) NOT NULL,
   `email` varchar(180) NOT NULL,
-  `username` varchar(40) NOT NULL,
   `roles` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL CHECK (json_valid(`roles`)),
   `password` varchar(255) NOT NULL,
-  `status` varchar(12) NOT NULL,
-  `created_at` datetime NOT NULL
+  `username` varchar(50) NOT NULL,
+  `role_type` varchar(20) NOT NULL,
+  `status` varchar(20) NOT NULL,
+  `bio` longtext DEFAULT NULL,
+  `favorite_game` varchar(50) DEFAULT NULL,
+  `created_at` datetime NOT NULL,
+  `last_activity_at` datetime DEFAULT NULL,
+  `reset_token` varchar(64) DEFAULT NULL,
+  `reset_expires_at` datetime DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Déchargement des données de la table `user`
+--
+
+INSERT INTO `user` (`id`, `email`, `roles`, `password`, `username`, `role_type`, `status`, `bio`, `favorite_game`, `created_at`, `last_activity_at`, `reset_token`, `reset_expires_at`) VALUES
+(1, 'admin@email.com', '[\"ROLE_ADMIN\"]', '$2y$13$Sr.WrlyN88QJHg2.0VZLC..jCZQ9gmXUAzc5cR6HxutyiBo.PdNF6', 'admin', 'PLAYER', 'ACTIVE', 'Esports fan • Valorant main • Campus competitor', 'LoL', '2026-02-04 21:24:14', '2026-02-07 15:57:11', '8da073d37adf31842250761a82df2bbe2688836255913e93e0165a0cf6f426ab', '2026-02-05 21:27:16'),
+(3, 'Oke@esprit.tn', '[\"ROLE_USER\"]', '$2y$13$wfQjHV9QdzG.xfJvH1XQTuASDltKvB1K2gxP9wFV.0Yw7jaBiaBn2', 'oke', 'FAN', 'ACTIVE', 'Esports fan • Valorant main • Campus competitor', 'FIFA', '2026-02-05 20:01:00', '2026-02-05 20:24:16', NULL, NULL);
 
 --
 -- Index pour les tables déchargées
@@ -83,35 +74,21 @@ ALTER TABLE `doctrine_migration_versions`
   ADD PRIMARY KEY (`version`);
 
 --
--- Index pour la table `messenger_messages`
---
-ALTER TABLE `messenger_messages`
-  ADD PRIMARY KEY (`id`),
-  ADD KEY `IDX_75EA56E0FB7336F0E3BD61CE16BA31DBBF396750` (`queue_name`,`available_at`,`delivered_at`,`id`);
-
---
 -- Index pour la table `user`
 --
 ALTER TABLE `user`
   ADD PRIMARY KEY (`id`),
-  ADD UNIQUE KEY `uniq_user_email` (`email`),
-  ADD UNIQUE KEY `uniq_user_username` (`username`);
+  ADD UNIQUE KEY `UNIQ_8D93D649E7927C74` (`email`);
 
 --
 -- AUTO_INCREMENT pour les tables déchargées
 --
 
 --
--- AUTO_INCREMENT pour la table `messenger_messages`
---
-ALTER TABLE `messenger_messages`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT;
-
---
 -- AUTO_INCREMENT pour la table `user`
 --
 ALTER TABLE `user`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
