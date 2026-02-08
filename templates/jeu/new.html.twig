@@ -1,11 +1,52 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/base_admin.html.twig' %}
 
-{% block title %}New Jeu{% endblock %}
+{% block title %}Ajouter un Jeu • ArenaMind{% endblock %}
 
 {% block body %}
-    <h1>Create new Jeu</h1>
+    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
+        <span style="font-size: 30px;">🛡️</span>
+        <h1>Ajouter un Nouveau Jeu</h1>
+    </div>
+    <p class="subtitle">Remplissez les informations pour ajouter un jeu à la plateforme.</p>
 
-    {{ include('jeu/_form.html.twig') }}
+    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+        
+        {# CHAMP NOM #}
+        <div style="margin-bottom: 20px;">
+            {{ form_label(form.nom, "Nom du Jeu", {'label_attr': {'style': 'display: block; margin-bottom: 8px; font-weight: 600;'}}) }}
+            {{ form_widget(form.nom) }}
+            <div style="color: var(--danger); font-size: 13px; margin-top: 5px;">
+                {{ form_errors(form.nom) }}
+            </div>
+        </div>
 
-    <a href="{{ path('app_jeu_index') }}">back to list</a>
+        {# CHAMP DESCRIPTION #}
+        <div style="margin-bottom: 20px;">
+            {{ form_label(form.description, "Description", {'label_attr': {'style': 'display: block; margin-bottom: 8px; font-weight: 600;'}}) }}
+            {{ form_widget(form.description) }}
+            <div style="color: var(--danger); font-size: 13px; margin-top: 5px;">
+                {{ form_errors(form.description) }}
+            </div>
+        </div>
+
+        {# CHAMP IMAGE (Ta demande spécifique) #}
+        <div class="row" style="margin-bottom: 30px;">
+            <div style="flex: 1; display: flex; flex-direction: column;">
+                {{ form_label(form.image, "URL de l'image", {'label_attr': {'style': 'display: block; margin-bottom: 8px; font-weight: 600;'}}) }}
+                {{ form_widget(form.image) }}
+                
+                <div style="color: var(--danger); font-size: 13px; margin-top: 5px;">
+                    {{ form_errors(form.image) }}
+                </div>
+            </div>
+        </div>
+
+        {# BOUTONS D'ACTION #}
+        <div style="display: flex; align-items: center; gap: 20px;">
+            <button type="submit" class="btn">✨ Enregistrer</button>
+            <a href="{{ path('app_jeu_index') }}" style="color: var(--muted); text-decoration: none; font-size: 14px;">Retour à la liste</a>
+        </div>
+
+    {{ form_end(form) }}
+
 {% endblock %}

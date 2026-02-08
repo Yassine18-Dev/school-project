@@ -1,0 +1,27 @@
+<script>
+function updateTimers() {
+    const timers = document.querySelectorAll('.countdown-box');
+
+    timers.forEach(timer => {
+        const target = new Date(timer.getAttribute('data-date')).getTime();
+        const now = new Date().getTime();
+        const diff = target - now;
+
+        if (diff <= 0) {
+            timer.innerHTML = "🔴 EN COURS";
+            timer.style.color = "#ff4d4d";
+            return;
+        }
+
+        const d = Math.floor(diff / (1000 * 60 * 60 * 24));
+        const h = Math.floor((diff % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        const m = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+        const s = Math.floor((diff % (1000 * 60)) / 1000);
+
+        timer.innerHTML = `⏳ ${d}j ${h}h ${m}m ${s}s`;
+    });
+}
+
+setInterval(updateTimers, 1000);
+updateTimers();
+</script>

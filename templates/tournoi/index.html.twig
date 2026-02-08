@@ -1,0 +1,78 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Gestion des Tournois • ArenaMind{% endblock %}
+
+{% block body %}
+    {# Affichage des messages flash pour confirmer les actions #}
+    {% for msg in app.flashes('success') %}
+        <div style="background: rgba(168, 85, 247, 0.2); border: 1px solid var(--purple); color: #e9d5ff; padding: 15px; border-radius: 12px; margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
+            <span>✅</span> {{ msg }}
+        </div>
+    {% endfor %}
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <div>
+            <h1 style="font-size: 2.5rem; margin-bottom: 5px;">🏆 Tournois</h1>
+            <p class="subtitle" style="color: var(--muted); margin: 0;">Planifiez vos prochains événements e-sport.</p>
+        </div>
+        <a href="{{ path('app_tournoi_new') }}" class="btn" style="text-decoration: none; display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 1.2rem;">+</span> Créer un Tournoi
+        </a>
+    </div>
+
+    <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); border-radius: 15px; overflow: hidden;">
+        <table style="width: 100%; border-collapse: collapse; text-align: left;">
+            <thead>
+                <tr style="background: rgba(168, 85, 247, 0.05); border-bottom: 1px solid var(--border);">
+                    <th style="padding: 20px; color: var(--purple); font-weight: 600; width: 80px;">ID</th>
+                    <th style="padding: 20px; color: var(--purple); font-weight: 600;">Nom de la compétition</th>
+                    <th style="padding: 20px; color: var(--purple); font-weight: 600;">Jeu</th>
+                    <th style="padding: 20px; color: var(--purple); font-weight: 600;">Date & Heure</th>
+                    <th style="padding: 20px; color: var(--purple); font-weight: 600; text-align: right;">Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+            {% for tournoi in tournois %}
+                <tr style="border-bottom: 1px solid var(--border); transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
+                    <td style="padding: 20px;">
+                        <span class="badge" style="background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: 6px; font-size: 12px;">#{{ tournoi.id }}</span>
+                    </td>
+                    <td style="padding: 20px;">
+                        <span style="font-weight: 600; color: #fff; font-size: 1.1rem;">{{ tournoi.nom }}</span>
+                    </td>
+                    <td style="padding: 20px;">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span style="font-size: 1.2rem;">🎮</span>
+                            <span style="background: linear-gradient(90deg, var(--purple), #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700;">
+                                {{ tournoi.jeu.nom }}
+                            </span>
+                        </div>
+                    </td>
+                    <td style="padding: 20px; color: var(--muted);">
+                        <div style="display: flex; align-items: center; gap: 8px;">
+                            <span>📅</span> {{ tournoi.dateTournoi ? tournoi.dateTournoi|date('d/m/Y H:i') : 'Non planifié' }}
+                        </div>
+                    </td>
+                    <td style="padding: 20px; text-align: right;">
+                        <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                            <a href="{{ path('app_tournoi_edit', {'id': tournoi.id}) }}" class="btn-secondary" style="padding: 8px 15px; font-size: 13px; text-decoration: none; border-radius: 8px;">
+                                ⚙️ Modifier
+                            </a>
+                            <a href="{{ path('app_tournoi_show', {'id': tournoi.id}) }}" style="background: rgba(255,255,255,0.05); color: #fff; padding: 8px 15px; border-radius: 8px; text-decoration: none; font-size: 13px; border: 1px solid var(--border);">
+                                👁️ Voir
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+            {% else %}
+                <tr>
+                    <td colspan="5" style="padding: 50px; text-align: center; color: var(--muted);">
+                        <div style="font-size: 3rem; margin-bottom: 10px;">📭</div>
+                        <p>Aucun tournoi n'a été créé pour le moment.</p>
+                    </td>
+                </tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+{% endblock %}

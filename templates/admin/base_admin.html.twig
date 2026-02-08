@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}Admin - ArenaMind{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2290%22>🏆</text></svg>">
+        
+        {# Import d'une police Google Fonts pour le côté Gaming #}
+        <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&display=swap" rel="stylesheet">
+
+        <style>
+            :root {
+                --bg-admin: #0b0e14;
+                --card-admin: #161b22;
+                --purple: #a855f7;
+                --border: rgba(255, 255, 255, 0.1);
+                --text: #e6edf3;
+            }
+
+            body {
+                background-color: var(--bg-admin);
+                color: var(--text);
+                font-family: 'Inter', sans-serif;
+                margin: 0;
+            }
+
+            /* Barre de navigation supérieure */
+            nav.admin-navbar {
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                padding: 15px 30px;
+                background: var(--card-admin);
+                border-bottom: 1px solid var(--border);
+                position: sticky;
+                top: 0;
+                z-index: 1000;
+            }
+
+            .logo-admin {
+                font-weight: 800;
+                font-size: 1.2rem;
+                letter-spacing: 1px;
+            }
+
+            .logo-admin span { color: var(--purple); }
+
+            .nav-links {
+                display: flex;
+                gap: 20px;
+                align-items: center;
+            }
+
+            .nav-item {
+                color: #8b949e;
+                text-decoration: none;
+                font-weight: 500;
+                transition: 0.2s;
+            }
+
+            .nav-item:hover { color: var(--purple); }
+
+            /* Le bouton que tu as demandé */
+            .btn-view-front {
+                background: var(--purple);
+                color: white;
+                padding: 10px 20px;
+                border-radius: 10px;
+                text-decoration: none;
+                font-weight: bold;
+                transition: transform 0.2s, box-shadow 0.2s;
+                display: flex;
+                align-items: center;
+                gap: 8px;
+            }
+
+            .btn-view-front:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(168, 85, 247, 0.4);
+                color: white;
+            }
+
+            .container {
+                padding: 40px;
+                max-width: 1200px;
+                margin: 0 auto;
+            }
+        </style>
+        {% block stylesheets %}{% endblock %}
+    </head>
+    <body>
+        <nav class="admin-navbar">
+            <div class="logo-admin">ARENA<span>MIND</span> <small style="font-size: 0.6rem; color: #8b949e;">ADMIN</small></div>
+            
+            <div class="nav-links">
+                <a href="{{ path('app_tournoi_index') }}" class="nav-item">Tournois</a>
+                {# Ajoute ici tes autres liens (Jeux, Users, etc.) #}
+                <a href="#" class="nav-item">Jeux</a>
+                
+                <a href="{{ path('app_front_tournois') }}" target="_blank" class="btn-view-front">
+                    👁️ Voir le Site Public
+                </a>
+            </div>
+        </nav>
+
+        <div class="container">
+            {% block body %}{% endblock %}
+        </div>
+
+        {% block javascripts %}{% endblock %}
+    </body>
+</html>

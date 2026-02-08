@@ -1,13 +1,67 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/base_admin.html.twig' %}
 
-{% block title %}Edit Jeu{% endblock %}
+{% block title %}Modifier {{ jeu.nom }} • ArenaMind{% endblock %}
 
 {% block body %}
-    <h1>Edit Jeu</h1>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
+        <div>
+            <div style="display: flex; align-items: center; gap: 15px;">
+                <span style="font-size: 30px;">📝</span>
+                <h1>Modifier le jeu : {{ jeu.nom }}</h1>
+            </div>
+            <p class="subtitle">Mettez à jour les informations du jeu ci-dessous.</p>
+        </div>
+        
+        {# BOUTON SUPPRIMER (Intégré en haut à droite pour plus de clarté) #}
+        {{ include('jeu/_delete_form.html.twig') }}
+    </div>
 
-    {{ include('jeu/_form.html.twig', {'button_label': 'Update'}) }}
+    <div style="background: rgba(255,255,255,0.02); padding: 25px; border-radius: 15px; border: 1px solid var(--border); margin-top: 20px;">
+        
+        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+            
+            {# CHAMP NOM #}
+            <div style="margin-bottom: 20px;">
+                {{ form_label(form.nom, "Nom du Jeu", {'label_attr': {'style': 'display: block; margin-bottom: 8px; font-weight: 600; color: var(--purple);'}}) }}
+                {{ form_widget(form.nom) }}
+                <div style="color: var(--danger); font-size: 13px; margin-top: 5px;">
+                    {{ form_errors(form.nom) }}
+                </div>
+            </div>
 
-    <a href="{{ path('app_jeu_index') }}">back to list</a>
+            {# CHAMP DESCRIPTION #}
+            <div style="margin-bottom: 20px;">
+                {{ form_label(form.description, "Description", {'label_attr': {'style': 'display: block; margin-bottom: 8px; font-weight: 600; color: var(--purple);'}}) }}
+                {{ form_widget(form.description) }}
+                <div style="color: var(--danger); font-size: 13px; margin-top: 5px;">
+                    {{ form_errors(form.description) }}
+                </div>
+            </div>
 
-    {{ include('jeu/_delete_form.html.twig') }}
+            {# CHAMP IMAGE #}
+            <div style="margin-bottom: 30px;">
+                {{ form_label(form.image, "URL de l'image", {'label_attr': {'style': 'display: block; margin-bottom: 8px; font-weight: 600; color: var(--purple);'}}) }}
+                
+                <div style="display: flex; gap: 15px; align-items: flex-start;">
+                    {% if jeu.image %}
+                        <img src="{{ jeu.image }}" alt="Preview" style="width: 80px; height: 80px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border);">
+                    {% endif %}
+                    
+                    <div style="flex: 1;">
+                        {{ form_widget(form.image) }}
+                        <div style="color: var(--danger); font-size: 13px; margin-top: 5px;">
+                            {{ form_errors(form.image) }}
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            {# ACTIONS DE SAUVEGARDE #}
+            <div style="display: flex; align-items: center; gap: 20px; border-top: 1px solid var(--border); padding-top: 25px;">
+                <button type="submit" class="btn">💾 Enregistrer les modifications</button>
+                <a href="{{ path('app_jeu_index') }}" class="btn-secondary" style="text-decoration: none; padding: 12px 20px; border-radius: 10px; font-weight: 700;">Annuler</a>
+            </div>
+
+        {{ form_end(form) }}
+    </div>
 {% endblock %}

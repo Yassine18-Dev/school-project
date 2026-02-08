@@ -1,0 +1,39 @@
+{% extends 'admin/base_admin.html.twig' %}
+
+{% block title %}Détails du Tournoi • {{ tournoi.nom }}{% endblock %}
+
+{% block body %}
+    <div style="margin-bottom: 30px;">
+        <a href="{{ path('app_tournoi_index') }}" style="color: var(--muted); text-decoration: none; font-size: 0.9rem;">← Retour à la liste</a>
+        <h1 style="margin-top: 10px;">Détails de l'événement</h1>
+    </div>
+
+    <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 20px; padding: 40px; display: flex; gap: 40px; align-items: flex-start;">
+        
+        {# Icône ou Miniature #}
+        <div style="background: linear-gradient(135deg, var(--purple), #3b82f6); width: 120px; height: 120px; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 3rem; box-shadow: 0 10px 30px rgba(168, 85, 247, 0.3);">
+            🏆
+        </div>
+
+        <div style="flex: 1;">
+            <h2 style="font-size: 2rem; margin-bottom: 20px; color: #fff;">{{ tournoi.nom }}</h2>
+            
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px;">
+                <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; border: 1px solid var(--border);">
+                    <p style="color: var(--muted); margin: 0; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;">Jeu Officiel</p>
+                    <p style="margin: 5px 0 0; font-weight: 700; color: var(--purple); font-size: 1.2rem;">🎮 {{ tournoi.jeu.nom }}</p>
+                </div>
+
+                <div style="background: rgba(255,255,255,0.03); padding: 15px; border-radius: 12px; border: 1px solid var(--border);">
+                    <p style="color: var(--muted); margin: 0; font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px;">Date de début</p>
+                    <p style="margin: 5px 0 0; font-weight: 700; color: #fff; font-size: 1.1rem;">📅 {{ tournoi.dateTournoi ? tournoi.dateTournoi|date('d/m/Y à H:i') : 'Non définie' }}</p>
+                </div>
+            </div>
+
+            <div style="margin-top: 40px; display: flex; gap: 15px;">
+                <a href="{{ path('app_tournoi_edit', {'id': tournoi.id}) }}" class="btn" style="text-decoration: none;">⚙️ Modifier le tournoi</a>
+                {{ include('tournoi/_delete_form.html.twig') }}
+            </div>
+        </div>
+    </div>
+{% endblock %}

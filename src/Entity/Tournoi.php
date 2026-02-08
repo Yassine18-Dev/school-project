@@ -5,6 +5,7 @@ namespace App\Entity;
 use App\Repository\TournoiRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: TournoiRepository::class)]
 class Tournoi
@@ -15,22 +16,24 @@ class Tournoi
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $titre = null;
+    #[Assert\NotBlank(message: "Le nom du tournoi ne peut pas être vide.")]
+    #[Assert\Length(
+        min: 3,
+        minMessage: "Le nom du tournoi doit comporter au moins {{ limit }} caractères."
+    )]
+    private ?string $nom = null;
 
     #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $dateDebut = null;
+    #[Assert\NotBlank(message: "Veuillez sélectionner une date pour le tournoi.")]
+    #[Assert\GreaterThan(
+        "now",
+        message: "La date du tournoi doit être dans le futur."
+    )]
+    private ?\DateTimeInterface $dateTournoi = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $dateFin = null;
-
-    #[ORM\Column(length: 255)]
-    private ?string $recompense = null;
-
-    #[ORM\Column(length: 50)]
-    private ?string $statut = null; // ex: "A venir", "En cours", "Terminé"
-
-    #[ORM\ManyToOne(targetEntity: Jeu::class, inversedBy: 'tournois')]
+    #[ORM\ManyToOne(targetEntity: Jeu::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank(message: "Vous devez impérativement choisir un jeu.")]
     private ?Jeu $jeu = null;
 
     public function getId(): ?int
@@ -38,58 +41,27 @@ class Tournoi
         return $this->id;
     }
 
-    public function getTitre(): ?string
+    public function getNom(): ?string
     {
-        return $this->titre;
+        return $this->nom;
     }
 
-    public function setTitre(string $titre): static
+    public function setNom(string $nom): static
     {
-        $this->titre = $titre;
+        $this->nom = $nom;
+
         return $this;
     }
 
-    public function getDateDebut(): ?\DateTimeInterface
+    public function getDateTournoi(): ?\DateTimeInterface
     {
-        return $this->dateDebut;
+        return $this->dateTournoi;
     }
 
-    public function setDateDebut(\DateTimeInterface $dateDebut): static
+    public function setDateTournoi(\DateTimeInterface $dateTournoi): static
     {
-        $this->dateDebut = $dateDebut;
-        return $this;
-    }
+        $this->dateTournoi = $dateTournoi;
 
-    public function getDateFin(): ?\DateTimeInterface
-    {
-        return $this->dateFin;
-    }
-
-    public function setDateFin(\DateTimeInterface $dateFin): static
-    {
-        $this->dateFin = $dateFin;
-        return $this;
-    }
-
-    public function getRecompense(): ?string
-    {
-        return $this->recompense;
-    }
-
-    public function setRecompense(string $recompense): static
-    {
-        $this->recompense = $recompense;
-        return $this;
-    }
-
-    public function getStatut(): ?string
-    {
-        return $this->statut;
-    }
-
-    public function setStatut(string $statut): static
-    {
-        $this->statut = $statut;
         return $this;
     }
 
@@ -101,6 +73,7 @@ class Tournoi
     public function setJeu(?Jeu $jeu): static
     {
         $this->jeu = $jeu;
+
         return $this;
     }
 }

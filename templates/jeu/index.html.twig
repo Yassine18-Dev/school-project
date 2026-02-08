@@ -1,39 +1,67 @@
-{% extends 'base.html.twig' %}
+{% extends 'admin/base_admin.html.twig' %}
 
-{% block title %}Jeu index{% endblock %}
+{% block title %}Gestion des Jeux • ArenaMind{% endblock %}
 
 {% block body %}
-    <h1>Jeu index</h1>
+    {# AFFICHAGE DES MESSAGES DE SUCCÈS #}
+    {% for msg in app.flashes('success') %}
+        <div style="background: rgba(22, 163, 74, 0.2); border: 1px solid var(--success); color: var(--success); padding: 15px; border-radius: 10px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+            <span>✅</span> {{ msg }}
+        </div>
+    {% endfor %}
 
-    <table class="table">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+        <div>
+            <h1 style="display: flex; align-items: center; gap: 10px;">
+                <span style="font-size: 24px;">🎮</span> Gestion des Jeux
+            </h1>
+            <p class="subtitle">Liste complète des jeux disponibles sur la plateforme.</p>
+        </div>
+        <a href="{{ path('app_jeu_new') }}" class="btn">✨ Create new</a>
+    </div>
+
+    <table>
         <thead>
             <tr>
-                <th>Id</th>
-                <th>Nom</th>
+                <th style="width: 80px;">ID</th>
+                <th>Jeu</th>
                 <th>Description</th>
-                <th>Image</th>
-                <th>actions</th>
+                <th style="text-align: right;">Actions</th>
             </tr>
         </thead>
         <tbody>
         {% for jeu in jeus %}
             <tr>
-                <td>{{ jeu.id }}</td>
-                <td>{{ jeu.nom }}</td>
-                <td>{{ jeu.description }}</td>
-                <td>{{ jeu.image }}</td>
+                <td><span class="badge">#{{ jeu.id }}</span></td>
                 <td>
-                    <a href="{{ path('app_jeu_show', {'id': jeu.id}) }}">show</a>
-                    <a href="{{ path('app_jeu_edit', {'id': jeu.id}) }}">edit</a>
+                    <div style="display: flex; align-items: center; gap: 15px;">
+                        {# AFFICHAGE DE LA MINIATURE #}
+                        <img src="{{ jeu.image }}" alt="{{ jeu.nom }}" 
+                             style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border); background: #111;">
+                        
+                        <div style="display: flex; flex-direction: column;">
+                            <span style="font-weight: bold; color: var(--text);">{{ jeu.nom }}</span>
+                        </div>
+                    </div>
+                </td>
+                <td style="color: var(--muted); font-size: 14px;">
+                    {{ jeu.description|length > 60 ? jeu.description|slice(0, 60) ~ '...' : jeu.description }}
+                </td>
+                <td style="text-align: right;">
+                    <div style="display: flex; justify-content: flex-end; gap: 10px;">
+                        <a href="{{ path('app_jeu_show', {'id': jeu.id}) }}" class="btn-secondary" style="padding: 6px 12px; font-size: 12px; text-decoration: none; border-radius: 6px;">Détails</a>
+                        <a href="{{ path('app_jeu_edit', {'id': jeu.id}) }}" class="btn" style="padding: 6px 12px; font-size: 12px; text-decoration: none; border-radius: 6px; background: var(--blue);">Modifier</a>
+                    </div>
                 </td>
             </tr>
         {% else %}
             <tr>
-                <td colspan="5">no records found</td>
+                <td colspan="4" style="text-align: center; padding: 40px; color: var(--muted);">
+                    <div style="font-size: 40px; margin-bottom: 10px;">📂</div>
+                    Aucun jeu n'a été trouvé dans la base de données.
+                </td>
             </tr>
         {% endfor %}
         </tbody>
     </table>
-
-    <a href="{{ path('app_jeu_new') }}">Create new</a>
 {% endblock %}

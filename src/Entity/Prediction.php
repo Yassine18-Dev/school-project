@@ -3,7 +3,9 @@
 namespace App\Entity;
 
 use App\Repository\PredictionRepository;
+use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: PredictionRepository::class)]
 class Prediction
@@ -13,48 +15,33 @@ class Prediction
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $scorePredit = null;
-
-    #[ORM\Column]
-    private ?\DateTimeImmutable $datePrediction = null;
-
-    #[ORM\ManyToOne(targetEntity: Tournoi::class, inversedBy: 'predictions')]
+    #[ORM\ManyToOne(targetEntity: Tournoi::class)]
     #[ORM\JoinColumn(nullable: false)]
+    #[Assert\NotBlank(message: "La prédiction doit être liée à un tournoi.")]
     private ?Tournoi $tournoi = null;
 
-    #[ORM\ManyToOne(targetEntity: User::class)]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?User $user = null;
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom du vainqueur prédit ne peut pas être vide.")]
+    private ?string $vainqueurPredi = null;
+
+    #[ORM\Column]
+    #[Assert\NotNull]
+    #[Assert\Range(min: 0, max: 1, notInRangeMessage: "La confiance doit être entre 0 et 1.")]
+    private ?float $confianceAI = null;
+
+    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    private ?\DateTimeInterface $createdAt = null;
 
     public function __construct()
     {
-        // La date de prédiction est fixée automatiquement à l'instant T de la création
-        $this->datePrediction = new \DateTimeImmutable();
+        // Initialise la date automatiquement à la création
+        $this->createdAt = new \DateTime();
     }
 
     public function getId(): ?int
     {
         return $this->id;
     }
-
-    public function getScorePredit(): ?string
-    {
-        return $this->scorePredit;
-    }
-
-    public function setScorePredit(string $scorePredit): static
-    {
-        $this->scorePredit = $scorePredit;
-        return $this;
-    }
-
-    public function getDatePrediction(): ?\DateTimeImmutable
-    {
-        return $this->datePrediction;
-    }
-
-    // Pas de setDatePrediction car elle est gérée par le constructeur
 
     public function getTournoi(): ?Tournoi
     {
@@ -64,17 +51,43 @@ class Prediction
     public function setTournoi(?Tournoi $tournoi): static
     {
         $this->tournoi = $tournoi;
+
         return $this;
     }
 
-    public function getUser(): ?User
+    public function getVainqueurPredi(): ?string
     {
-        return $this->user;
+        return $this->vainqueurPredi;
     }
 
-    public function setUser(?User $user): static
+    public function setVainqueurPredi(string $vainqueurPredi): static
     {
-        $this->user = $user;
+        $this->vainqueurPredi = $vainqueurPredi;
+
+        return $this;
+    }
+
+    public function getConfianceAI(): ?float
+    {
+        return $this->confianceAI;
+    }
+
+    public function setConfianceAI(float $confianceAI): static
+    {
+        $this->confianceAI = $confianceAI;
+
+        return $this;
+    }
+
+    public function getCreatedAt(): ?\DateTimeInterface
+    {
+        return $this->createdAt;
+    }
+
+    public function setCreatedAt(\DateTimeInterface $createdAt): static
+    {
+        $this->createdAt = $createdAt;
+
         return $this;
     }
 }
