@@ -1,7 +1,7 @@
 <?php
 namespace App\Controller;
 
-use App\Entity\Game; // Assure-toi que tu as une entité Game
+use App\Entity\Game; 
 use App\Entity\ShopProduct;
 use Symfony\Component\HttpFoundation\Request;
 use Doctrine\ORM\EntityManagerInterface;
@@ -25,9 +25,16 @@ class ShopController extends AbstractController
 
         // récupération des produits selon type + filtre jeu
         $criteria = ['type' => $type];
-        if ($game) {
-            $criteria['game'] = $game; // filtre par jeu
-        }
+
+// utilisateur NON admin → seulement produits actifs
+if (!$this->isGranted('ROLE_ADMIN')) {
+    $criteria['isActive'] = true;
+}
+
+// filtre par jeu si choisi
+if ($game) {
+    $criteria['game'] = $game;
+}
 
         $products = $em->getRepository(ShopProduct::class)
             ->findBy(

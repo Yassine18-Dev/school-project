@@ -11,6 +11,7 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\File\Exception\FileException;
 use Symfony\Component\String\Slugger\SluggerInterface;
+use Symfony\Component\Security\Http\Attribute\IsGranted;
 
 #[Route('/shop/product')]
 final class ShopProductController extends AbstractController
@@ -24,6 +25,8 @@ final class ShopProductController extends AbstractController
     }
 
     #[Route('/new', name: 'app_shop_product_new', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+
 public function new(
     Request $request,
     EntityManagerInterface $entityManager,
@@ -95,6 +98,8 @@ public function new(
     }
 
     #[Route('/{id}/edit', name: 'app_shop_product_edit', methods: ['GET', 'POST'])]
+    #[IsGranted('ROLE_ADMIN')]
+
 public function edit(
     Request $request,
     ShopProduct $shopProduct,
@@ -163,13 +168,24 @@ public function edit(
 }
 
     #[Route('/{id}', name: 'app_shop_product_delete', methods: ['POST'])]
-    public function delete(Request $request, ShopProduct $shopProduct, EntityManagerInterface $entityManager): Response
-    {
-        if ($this->isCsrfTokenValid('delete'.$shopProduct->getId(), $request->request->get('_token'))) {
-            $entityManager->remove($shopProduct);
-            $entityManager->flush();
-        }
+    #[IsGranted('ROLE_ADMIN')]
 
-        return $this->redirectToRoute('app_shop_product_index');
+    public function delete(Request $request,
+    ShopProduct $shopProduct,
+    EntityManagerInterface $entityManager
+): Response {
+    if ($this->isCsrfTokenValid('delete'.$shopProduct->getId(), $request->request->get('_token'))) {
+
+        // ❌ suppression physique
+        // $entityManager->remove($shopProduct);
+
+        // ✅ désactivation
+        $shopProduct->setIsActive(false);
+        $entityManager->flush();
+
+        $this->addFlash('success', 'Produit désactivé avec succès');
     }
+
+    return $this->redirectToRoute('app_shop_product_index');
+}
 }

@@ -3,6 +3,29 @@
 {% block title %}{{ shop_product.name }} - Détail{% endblock %}
 
 {% block body %}
+{% if is_granted('ROLE_ADMIN') %}
+<div style="text-align: center; margin-top: 20px;">
+    <a href="{{ path('app_shop_product_edit', {'id': shop_product.id}) }}"
+       style="
+           padding: 10px 20px;
+           background: #f59e0b;
+           color: white;
+           border-radius: 8px;
+           text-decoration: none;
+           font-weight: bold;
+           transition: background 0.3s;
+           display: inline-block;
+       "
+       onmouseover="this.style.background='#d97706';"
+       onmouseout="this.style.background='#f59e0b';">
+        ✏️ Modifier produit
+    </a>
+</div>
+{% endif %}
+
+
+
+
 <h1>{{ shop_product.name }}</h1>
 
 <div style="display: flex; gap: 40px; flex-wrap: wrap;">
@@ -58,9 +81,15 @@
         {% endif %}
         <p><strong>Type :</strong> {{ shop_product.type|capitalize }}</p>
     </div>
+    <form method="post" action="{{ path('cart_add', {'id': shop_product.id}) }}">
+        <button type="submit" style="width: 100%; background: #7c3aed; color: white; border: none; padding: 8px; border-radius: 6px; cursor: pointer; font-weight: bold;">
+            🛒 Ajouter
+        </button>
+    </form>
 </div>
 {% endblock %}
 {% block javascripts %}
+    {{ parent() }}
     <script src="{{ asset('js/shop-slider.js') }}"></script>
 {% endblock %}      
         
