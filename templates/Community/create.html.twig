@@ -1,0 +1,9 @@
+{% extends 'front/base_front.html.twig' %}
+{% block body %}
+<h1>Créer un post</h1>
+{{ form_start(form) }}
+{{ form_row(form.content) }}
+{{ form_row(form.images) }}
+<button class="btn btn-success">Publier</button>
+{{ form_end(form) }}
+{% endblock %}

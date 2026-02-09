@@ -1,0 +1,150 @@
+{% extends 'front/base_front.html.twig' %}
+
+{% block title %}Communauté{% endblock %}
+
+{% block stylesheets %}
+<style>
+    /* Ajustements pour le container global de base_front */
+    .post-card {
+        background: rgba(255, 255, 255, 0.05);
+        border: 1px solid var(--border);
+        border-radius: 14px;
+        padding: 15px;
+        margin-bottom: 25px;
+        overflow: hidden; /* Empêche tout débordement horizontal */
+    }
+
+    .post-header {
+        border-bottom: 1px solid rgba(49, 46, 129, 0.3);
+        padding-bottom: 10px;
+        margin-bottom: 12px;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .post-content {
+        font-size: 15px;
+        line-height: 1.5;
+        margin-bottom: 15px;
+        word-wrap: break-word; /* Casse les longs mots pour éviter le scroll */
+    }
+
+    /* LE FIX POUR TES IMAGES */
+    .image-area {
+        width: 100%;
+        margin-top: 10px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .img-container {
+        width: 100%;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid var(--border);
+        background: #000;
+    }
+
+    .img-container img {
+        display: block;
+        width: 100%;      /* Force l'image à prendre la largeur du container (460px max) */
+        height: auto;     /* Garde les proportions */
+        object-fit: contain; 
+    }
+
+    .btn-create {
+        display: block;
+        text-align: center;
+        background: linear-gradient(90deg, var(--purple), var(--blue));
+        color: white;
+        text-decoration: none;
+        padding: 10px;
+        border-radius: 12px;
+        margin-bottom: 20px;
+        font-weight: bold;
+    }
+</style>
+{% endblock %}
+
+{% block body %}
+<div class="container community-container">
+    
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1 class="h3">Fil d'actualité</h1>
+        <a href="{{ path('community_create') }}" class="btn btn-primary rounded-pill px-4">
+            <i class="fas fa-plus me-2"></i>Créer un post
+        </a>
+    </div>
+
+    {# Affichage des messages flash (succès/erreur) #}
+    {% for label, messages in app.flashes %}
+        {% for message in messages %}
+            <div class="alert alert-{{ label }} alert-dismissible fade show" role="alert">
+                {{ message }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        {% endfor %}
+    {% endfor %}
+
+    {# Boucle sur les posts #}
+    {% for post in posts %}
+        <div class="card post-card mb-4 shadow-sm">
+            
+            <div class="post-header">
+                <div class="d-flex align-items-center">
+                    <div class="ms-2">
+                        <p class="author-name">
+                            {{ post.author.username }} 
+                            <span class="badge bg-soft-primary text-primary border border-primary ms-1" style="font-size: 0.7rem;">
+                                {{ post.author.roles[0]|replace({'ROLE_':'','_':' '}) }}
+                            </span>
+                        </p>
+                        <span class="post-date">{{ post.createdAt|date('d/m/Y H:i') }}</span>
+                    </div>
+                </div>
+
+                {% if is_granted('ROLE_ADMIN') or app.user == post.author %}
+                    <div class="dropdown">
+                        <button class="btn btn-link text-muted" type="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-ellipsis-h"></i>
+                        </button>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li>
+                                <a class="dropdown-item text-danger" href="{{ path('community_delete', {id: post.id}) }}" 
+                                   onclick="return confirm('Supprimer ce post définitivement ?')">
+                                   Supprimer le post
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="card-body pt-0">
+                <p class="card-text">{{ post.content|nl2br }}</p>
+            </div>
+
+            {% if post.images|length > 0 %}
+                <div class="post-image-gallery">
+                    {% for image in post.images %}
+            <img src="{{ asset('uploads/' ~ image.filename) }}" 
+                 alt="Image du post" 
+                 style="max-width: 500px; max-height: 300px; height: auto; width: auto;"/>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+            <div class="post-actions border-top">
+                <a href="#" class="btn-action"><i class="far fa-thumbs-up me-1"></i> J'aime</a>
+                <a href="#" class="btn-action"><i class="far fa-comment me-1"></i> Commenter</a>
+            </div>
+        </div>
+    {% else %}
+        <div class="text-center py-5">
+            <p class="text-muted">Aucun post n'a été publié pour le moment.</p>
+        </div>
+    {% endfor %}
+
+</div>
+{% endblock %}
