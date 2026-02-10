@@ -1,31 +1,78 @@
-{% extends 'base.html.twig' %}
-{% block title %}Register{% endblock %}
+{% extends 'front/base_front.html.twig' %}
+{% block title %}Inscription - ArenaMind{% endblock %}
 
 {% block body %}
-<h1>Create Account</h1>
-<p class="subtitle">Join the ArenaMind Esports platform</p>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card border-0 shadow-lg" style="background-color: #15192b; border-radius: 20px;">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <i class="fa-solid fa-user-plus fa-3x mb-3" style="color: #8833ff;"></i>
+                        <h2 class="fw-bold">Créer un compte</h2>
+                        <p class="text-secondary">Rejoignez la plateforme ArenaMind</p>
+                    </div>
 
-<form>
-    <label>Username</label>
-    <input placeholder="PlayerOne" required>
+                    {% for label, messages in app.flashes %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
 
-    <label>Email</label>
-    <input type="email" placeholder="player@email.com" required>
+                    <form method="post" action="{{ path('ui_register') }}">
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="fa-solid fa-user me-1"></i> Nom d'utilisateur
+                            </label>
+                            <input type="text" name="username" class="form-control bg-dark text-white border-secondary rounded-pill px-4 py-3"
+                                   placeholder="PlayerOne" required>
+                        </div>
 
-    <label>Password</label>
-    <input type="password" placeholder="Min 6 characters" required>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="fa-solid fa-envelope me-1"></i> Email
+                            </label>
+                            <input type="email" name="email" class="form-control bg-dark text-white border-secondary rounded-pill px-4 py-3"
+                                   placeholder="player@email.com" required>
+                        </div>
 
-    <label>Role</label>
-    <select>
-        <option>PLAYER</option>
-        <option>CAPTAIN</option>
-        <option>FAN</option>
-    </select>
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">
+                                <i class="fa-solid fa-lock me-1"></i> Mot de passe
+                            </label>
+                            <input type="password" name="password" class="form-control bg-dark text-white border-secondary rounded-pill px-4 py-3"
+                                   placeholder="Min 6 caractères" required>
+                        </div>
 
-    <button>Create account</button>
-</form>
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                <i class="fa-solid fa-shield-halved me-1"></i> Rôle
+                            </label>
+                            <select name="roleType" class="form-select bg-dark text-white border-secondary rounded-pill px-4 py-3">
+                                <option value="PLAYER">🎮 Joueur (Player)</option>
+                                <option value="CAPTAIN">👑 Capitaine (Captain)</option>
+                                <option value="FAN">⭐ Fan</option>
+                            </select>
+                        </div>
 
-<div class="link">
-    Already have an account? <a href="/login">Login</a>
+                        {# <input type="hidden" name="_csrf_token" value="{{ csrf_token('register') }}"> #}
+
+                        <button type="submit" class="btn btn-primary w-100 rounded-pill py-3 fw-bold" style="background: linear-gradient(90deg, #8833ff, #6366f1); border: none;">
+                            <i class="fa-solid fa-user-plus me-2"></i> Créer mon compte
+                        </button>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        <p class="text-secondary mb-0">Déjà inscrit ?
+                            <a href="{{ path('app_login') }}" class="fw-bold text-decoration-none" style="color: #8833ff;">Se connecter</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

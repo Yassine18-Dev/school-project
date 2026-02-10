@@ -1,25 +1,95 @@
-{% extends 'base.html.twig' %}
-{% block title %}Profile{% endblock %}
+{% extends 'front/base_front.html.twig' %}
+{% block title %}Mon Profil - ArenaMind{% endblock %}
 
 {% block body %}
-<h1>My Profile</h1>
-<p class="subtitle">Personal information</p>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card border-0" style="background-color: #15192b; border-radius: 20px; box-shadow: 0 0 40px rgba(136, 51, 255, 0.2);">
+                <div class="card-body p-5">
+                    <div class="d-flex align-items-center mb-4">
+                        <div class="bg-dark rounded-circle d-flex align-items-center justify-content-center border border-secondary border-opacity-25" style="width: 80px; height: 80px;">
+                            <i class="fa-solid fa-user-astronaut fa-3x" style="color: #8833ff;"></i>
+                        </div>
+                        <div class="ms-4">
+                            <h1 class="h2 fw-bold mb-1">{{ user.username }}</h1>
+                            <p class="text-secondary mb-0">{{ user.email }}</p>
+                        </div>
+                        <div class="ms-auto">
+                            {% if user.roleType == 'CAPTAIN' %}
+                                <span class="badge bg-warning text-dark rounded-pill px-3 py-2"><i class="fa-solid fa-crown me-1"></i> Captain</span>
+                            {% elseif 'ROLE_ADMIN' in user.roles %}
+                                <span class="badge bg-danger rounded-pill px-3 py-2"><i class="fa-solid fa-shield-halved me-1"></i> Admin</span>
+                            {% else %}
+                                <span class="badge bg-primary rounded-pill px-3 py-2"><i class="fa-solid fa-gamepad me-1"></i> Player</span>
+                            {% endif %}
+                        </div>
+                    </div>
 
-<p><strong>Username:</strong> {{ user.username }}</p>
-<p><strong>Email:</strong> {{ user.email }}</p>
+                    <div class="row g-4 mb-4">
+                        <div class="col-md-6">
+                            <div class="p-3 bg-dark rounded-3 border border-secondary border-opacity-25 h-100">
+                                <small class="text-muted text-uppercase fw-bold" style="font-size: 0.7rem;">Statut du compte</small>
+                                <div class="d-flex align-items-center mt-2">
+                                    {% if user.status == 'ACTIVE' %}
+                                        <i class="fa-solid fa-circle-check text-success me-2"></i> <span class="fw-medium">Actif</span>
+                                    {% elseif user.status == 'BANNED' %}
+                                        <i class="fa-solid fa-circle-xmark text-danger me-2"></i> <span class="fw-medium">Banni</span>
+                                    {% else %}
+                                        <i class="fa-solid fa-circle-pause text-warning me-2"></i> <span class="fw-medium">{{ user.status }}</span>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-3 bg-dark rounded-3 border border-secondary border-opacity-25 h-100">
+                                <small class="text-muted text-uppercase fw-bold" style="font-size: 0.7rem;">Membre depuis le</small>
+                                <div class="d-flex align-items-center mt-2">
+                                    <i class="fa-regular fa-calendar-days text-info me-2"></i> 
+                                    <span class="fw-medium">{{ user.createdAt|date('d/m/Y') }}</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="row g-4 mb-5">
+                         <div class="col-12">
+                            <div class="p-3 bg-dark rounded-3 border border-secondary border-opacity-25 h-100">
+                                <small class="text-muted text-uppercase fw-bold" style="font-size: 0.7rem;">Dernière activité</small>
+                                <div class="d-flex align-items-center mt-2">
+                                    <i class="fa-solid fa-clock-rotate-left text-warning me-2"></i> 
+                                    <span class="fw-medium">{{ user.lastActivityAt ? user.lastActivityAt|date('d/m/Y H:i') : 'Jamais' }}</span>
+                                </div>
+                            </div>
+                         </div>
+                    </div>
 
-<div style="margin:14px 0">
-    <span class="badge">Role: {{ user.role }}</span>
-    <span class="badge">Status: {{ user.status }}</span>
-</div>
+                    {% if user.bio %}
+                        <div class="mb-5">
+                            <h5 class="fw-bold mb-3"><i class="fa-solid fa-quote-left me-2 text-primary"></i> Bio</h5>
+                            <p class="text-secondary fst-italic">{{ user.bio }}</p>
+                        </div>
+                    {% endif %}
+                    
+                    {% if user.favoriteGame %}
+                         <div class="mb-5">
+                            <h5 class="fw-bold mb-3"><i class="fa-solid fa-gamepad me-2 text-primary"></i> Jeu Favori</h5>
+                            <span class="badge bg-dark border border-secondary px-3 py-2">{{ user.favoriteGame }}</span>
+                        </div>
+                    {% endif %}
 
-<p class="subtitle">
-    Registered: {{ user.registeredAt }}<br>
-    Last activity: {{ user.lastActivity }}
-</p>
-
-<div class="link">
-    <a href="/profile/edit">Edit profile</a> •
-    <a href="/profile?as=admin">Simulate Admin</a>
+                    <div class="d-flex gap-3">
+                        <a href="{{ path('ui_profile_edit') }}" class="btn btn-outline-light rounded-pill px-4">
+                            <i class="fa-solid fa-pen-to-square me-2"></i> Modifier mon profil
+                        </a>
+                        {# Logout link #}
+                        <a href="{{ path('app_logout') }}" class="btn btn-danger rounded-pill px-4 ms-auto">
+                            <i class="fa-solid fa-right-from-bracket me-2"></i> Déconnexion
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

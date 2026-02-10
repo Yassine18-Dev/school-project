@@ -1,211 +1,114 @@
+{# templates/base.html.twig #}
 <!DOCTYPE html>
-<html lang="fr" data-bs-theme="dark">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>{% block title %}ArenaMind{% endblock %}</title>
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
-    <!-- Bootstrap 5 CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
-    
-    <!-- FontAwesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
-    <style>
-        :root {
-            --bg-dark: #0b0e17;       /* Very dark navy */
-            --bg-card: #15192b;       /* Slightly lighter navy for cards */
-            --bg-input: #111420;      /* Dark input background */
-            --border-color: #2a2f45;  /* Subtle border */
-            --accent-purple: #8833ff; /* Primary Action */
-            --accent-blue: #3b82f6;   /* Secondary/Info */
-            --text-primary: #ffffff;
-            --text-secondary: #94a3b8;
-            --text-danger: #ef4444;
-        }
-
-        body {
-            font-family: 'Outfit', sans-serif;
-            background-color: var(--bg-dark);
-            color: var(--text-primary);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-
-        /* Navbar */
-        .navbar {
-            background-color: var(--bg-card);
-            border-bottom: 1px solid var(--border-color);
-            padding: 0.75rem 0;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-        }
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>{% block title %}ArenaMind{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🛡️</text></svg>">
         
-        .navbar-brand {
-            font-size: 1.25rem;
-            font-weight: 700;
-            letter-spacing: 0.5px;
-            color: var(--text-primary) !important;
-        }
+        {# Intégration Google Fonts et FontAwesome #}
+        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-        .navbar-brand i { 
-            color: var(--accent-blue); 
-        }
+        <style>
+            :root {
+                --bg-dark: #0b0e11;         /* Fond principal */
+                --card-bg: #151921;         /* Fond des formulaires */
+                --accent-purple: #8833ff;   /* Violet Néon */
+                --accent-blue: #3388ff;     /* Bleu Néon */
+                --text-gray: #a0a0a0;
+            }
 
-        /* Cards */
-        .card {
-            background-color: transparent !important; /* Let container handle bg or use specific class */
-            border: none;
-            box-shadow: none;
-        }
+            body {
+                background: radial-gradient(circle at top right, #1a1033 0%, #0b0e11 60%);
+                color: white;
+                font-family: 'Inter', sans-serif;
+                min-height: 100vh;
+                margin: 0;
+            }
+
+            /* --- Navbar Style ArenaMind --- */
+            .navbar {
+                background: rgba(0, 0, 0, 0.2) !important;
+                backdrop-filter: blur(10px);
+                padding: 15px 30px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .navbar-brand {
+                font-family: 'Orbitron', sans-serif;
+                font-weight: bold;
+                color: var(--accent-purple) !important;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+            }
+
+            /* --- Carte Gaming --- */
+            .gaming-card {
+                background: var(--card-bg);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                border-radius: 15px;
+                padding: 40px;
+                box-shadow: 0 0 30px rgba(136, 51, 255, 0.15);
+                max-width: 450px;
+                width: 100%;
+            }
+
+            /* --- Inputs --- */
+            .gaming-input {
+                background: rgba(0,0,0,0.3) !important;
+                border: 1px solid #2a2e35 !important;
+                color: white !important;
+                border-radius: 8px !important;
+                padding: 12px !important;
+            }
+
+            .gaming-input:focus {
+                border-color: var(--accent-purple) !important;
+                box-shadow: 0 0 10px rgba(136, 51, 255, 0.3) !important;
+                outline: none;
+            }
+
+            /* --- Boutons Dégradés --- */
+            .btn-gradient {
+                background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue));
+                border: none;
+                color: white;
+                font-weight: bold;
+                font-family: 'Orbitron', sans-serif;
+                border-radius: 8px;
+                padding: 12px;
+                width: 100%;
+                transition: 0.3s;
+                text-transform: uppercase;
+            }
+
+            .btn-gradient:hover {
+                box-shadow: 0 0 15px var(--accent-purple);
+                transform: translateY(-2px);
+                color: white;
+            }
+        </style>
         
-        /* Form Styling - Matching Screenshot */
-        .form-label {
-            color: var(--text-primary);
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-            font-size: 0.95rem;
-        }
-
-        .form-control, .form-select {
-            background-color: var(--bg-input);
-            border: 1px solid var(--border-color);
-            color: var(--text-primary);
-            padding: 0.75rem 1rem;
-            border-radius: 8px;
-            font-size: 0.95rem;
-            transition: all 0.2s;
-        }
-
-        .form-control:focus, .form-select:focus {
-            background-color: var(--bg-input);
-            border-color: var(--accent-purple);
-            color: var(--text-primary);
-            box-shadow: 0 0 0 4px rgba(136, 51, 255, 0.15);
-        }
-
-        .form-control::placeholder {
-            color: #475569;
-        }
-
-        /* Help text / Error text */
-        .form-text, .invalid-feedback {
-            font-size: 0.85rem;
-            margin-top: 0.4rem;
-        }
-        
-        .form-text { color: var(--text-secondary); }
-        .text-danger { color: var(--text-danger) !important; }
-        .text-danger ul { list-style: none; padding: 0; margin: 0; }
-        .invalid-feedback { display: block; color: var(--text-danger); }
-
-        /* Buttons */
-        .btn-primary {
-            background: linear-gradient(90deg, #8833ff 0%, #6366f1 100%);
-            border: none;
-            color: white;
-            font-weight: 600;
-            padding: 0.75rem 1.5rem;
-            border-radius: 8px;
-            transition: opacity 0.2s;
-            box-shadow: 0 4px 6px -1px rgba(136, 51, 255, 0.3);
-        }
-
-        .btn-primary:hover {
-            opacity: 0.9;
-            background: linear-gradient(90deg, #7c3aed 0%, #4f46e5 100%);
-            color: white;
-        }
-
-        .btn-link {
-            color: var(--text-secondary);
-            text-decoration: none;
-            transition: color 0.2s;
-        }
-        
-        .btn-link:hover { color: var(--text-primary); }
-
-        /* Tables (Updates for Dark Theme) */
-        .table {
-            --bs-table-bg: transparent;
-            --bs-table-color: var(--text-primary);
-            --bs-table-border-color: var(--border-color);
-        }
-        
-        .table th {
-            font-weight: 600;
-            text-transform: uppercase;
-            font-size: 0.75rem;
-            letter-spacing: 1px;
-            color: var(--text-secondary);
-        }
-
-        main {
-            flex: 1;
-            padding: 2rem 0;
-        }
-
-        /* Specific Admin Layout */
-        .admin-header {
-            display: flex;
-            align-items: center;
-            gap: 1rem;
-            margin-bottom: 2rem;
-        }
-        
-        .admin-title {
-            font-size: 1.75rem;
-            font-weight: 800;
-            background: linear-gradient(90deg, #fff 0%, #cbd5e1 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-
-    </style>
-    {% block stylesheets %}{% endblock %}
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
-        <div class="container-fluid px-4">
-            <a class="navbar-brand d-flex align-items-center gap-2" href="{{ path('app_jeu_index') }}">
-                <img src="{{ asset('assets/images/logo.svg') }}" alt="ArenaMind" height="40">
-                <span class="badge" style="background-color: #8833ff; font-size: 0.65rem; vertical-align: top;">Admin</span>
-            </a>
-            
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto align-items-center gap-3">
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_jeu_index') }}"><i class="fa-solid fa-gamepad me-1"></i> Jeux</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_tournoi_index') }}"><i class="fa-solid fa-trophy me-1"></i> Tournois</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link" href="{{ path('app_prediction_index') }}"><i class="fa-solid fa-wand-magic-sparkles me-1"></i> Prédictions</a>
-                    </li>
-                    <li class="nav-item border-start ps-3 border-secondary border-opacity-25">
-                        <a class="nav-link text-white" href="{{ path('app_front_home') }}">Site Front</a>
-                    </li>
-                </ul>
+        {% block stylesheets %}{% endblock %}
+    </head>
+    <body>
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/"><i class="fas fa-gamepad me-2"></i>ArenaMind</a>
+                <div class="d-flex">
+                    <a href="/login" class="btn btn-outline-light btn-sm rounded-pill px-3 me-2">Connexion</a>
+                    <a href="/register" class="btn btn-gradient btn-sm rounded-pill px-3">Rejoindre</a>
+                </div>
             </div>
-        </div>
-    </nav>
+        </nav>
 
-    <main>
-        {% block body %}{% endblock %}
-    </main>
+        <main>
+            {% block body %}{% endblock %}
+        </main>
 
-    <!-- Bootstrap 5 JS Bundle -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    {% block javascripts %}{% endblock %}
-</body>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        {% block javascripts %}{% endblock %}
+    </body>
 </html>

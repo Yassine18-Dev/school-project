@@ -1,3 +1,171 @@
-body {
-    background-color: skyblue;
+/* ============ ArenaMind - Global (Login-like) ============ */
+
+:root{
+  --am-bg-1: #070a1b;
+  --am-bg-2: #0b1030;
+  --am-card: rgba(18, 24, 54, 0.72);
+  --am-border: rgba(120, 120, 255, 0.22);
+  --am-text: rgba(255,255,255,0.88);
+  --am-muted: rgba(255,255,255,0.70);
+  --am-accent: #b78cff;
+  --am-link: #78a6ff;
+}
+
+body{
+  margin: 0;
+  color: var(--am-text);
+  font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji","Segoe UI Emoji";
+  background:
+    radial-gradient(1200px 600px at 50% 25%, rgba(120, 70, 255, 0.18), transparent 60%),
+    linear-gradient(180deg, var(--am-bg-1), var(--am-bg-2));
+}
+
+/* page center like login */
+.am-page{
+  min-height: calc(100vh - 80px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+}
+
+.am-card{
+  width: min(980px, 100%);
+  background: var(--am-card);
+  border: 1px solid var(--am-border);
+  border-radius: 18px;
+  padding: 22px;
+  box-shadow: 0 0 0 1px rgba(140, 140, 255, 0.08), 0 25px 80px rgba(0,0,0,0.35);
+  backdrop-filter: blur(10px);
+}
+
+.am-card-header{
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  margin-bottom: 14px;
+}
+
+.am-title{
+  margin: 0;
+  font-size: 28px;
+  font-weight: 800;
+  color: var(--am-accent);
+  letter-spacing: 0.3px;
+}
+
+.am-subtitle{
+  margin: 6px 0 0;
+  color: var(--am-muted);
+  font-size: 14px;
+}
+
+.am-actions{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.am-btn{
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid rgba(140, 140, 255, 0.28);
+  background: linear-gradient(90deg, rgba(181,95,255,0.95), rgba(79,126,255,0.95));
+  color: #fff;
+  text-decoration: none;
+  font-weight: 700;
+  transition: transform .08s ease, filter .12s ease;
+  cursor: pointer;
+}
+
+.am-btn:hover{ filter: brightness(1.05); }
+.am-btn:active{ transform: translateY(1px); }
+
+.am-btn--ghost{
+  background: rgba(255,255,255,0.06);
+  color: var(--am-text);
+  border: 1px solid rgba(255,255,255,0.14);
+}
+
+.am-link{
+  color: var(--am-link);
+  text-decoration: none;
+  font-weight: 700;
+}
+
+.am-link:hover{ text-decoration: underline; }
+
+.am-badge{
+  display: inline-flex;
+  padding: 6px 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.14);
+  background: rgba(255,255,255,0.06);
+  color: rgba(255,255,255,0.85);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+/* tables */
+.am-table{
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+  border-radius: 14px;
+}
+
+.am-table th, .am-table td{
+  padding: 12px 10px;
+  border-bottom: 1px solid rgba(255,255,255,0.08);
+  color: rgba(255,255,255,0.88);
+  text-align: left;
+  font-size: 14px;
+  vertical-align: top;
+}
+
+.am-table th{
+  color: rgba(255,255,255,0.75);
+  font-weight: 800;
+  background: rgba(255,255,255,0.04);
+}
+
+/* forms */
+.am-form{
+  display: grid;
+  gap: 14px;
+}
+
+.am-form label{
+  display: block;
+  margin-bottom: 6px;
+  color: rgba(255,255,255,0.78);
+  font-weight: 700;
+  font-size: 13px;
+}
+
+.am-input, .am-form input, .am-form select, .am-form textarea{
+  width: 100%;
+  padding: 12px 12px;
+  border-radius: 12px;
+  border: 1px solid rgba(140, 140, 255, 0.20);
+  background: rgba(0,0,0,0.20);
+  color: rgba(255,255,255,0.92);
+  outline: none;
+}
+
+.am-form input:focus, .am-form select:focus, .am-form textarea:focus{
+  border-color: rgba(183,140,255,0.55);
+  box-shadow: 0 0 0 3px rgba(183,140,255,0.15);
+}
+
+.am-form-actions{
+  display: flex;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 10px;
 }

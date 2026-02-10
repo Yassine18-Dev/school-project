@@ -1,22 +1,69 @@
-{% extends 'base.html.twig' %}
-{% block title %}Login{% endblock %}
+{% extends 'front/base_front.html.twig' %}
+{% block title %}Connexion - ArenaMind{% endblock %}
 
 {% block body %}
-<h1>Login</h1>
-<p class="subtitle">Access your ArenaMind account</p>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-md-5">
+            <div class="card border-0" style="background-color: #15192b; border-radius: 20px; box-shadow: 0 0 40px rgba(136, 51, 255, 0.2);">
+                <div class="card-body p-5">
+                    <div class="text-center mb-4">
+                        <i class="fa-solid fa-user-shield fa-3x mb-3" style="color: #8833ff;"></i>
+                        <h2 class="fw-bold">Connexion</h2>
+                        <p class="text-secondary">Accédez à votre compte ArenaMind</p>
+                    </div>
 
-<form>
-    <label>Email</label>
-    <input type="email" placeholder="player@email.com" required>
+                    {% if error is defined and error %}
+                        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                            {{ error.messageKey|trans(error.messageData, 'security') }}
+                            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        </div>
+                    {% endif %}
 
-    <label>Password</label>
-    <input type="password" placeholder="••••••••" required>
+                    {% for label, messages in app.flashes %}
+                        {% for message in messages %}
+                            <div class="alert alert-{{ label == 'error' ? 'danger' : label }} alert-dismissible fade show" role="alert">
+                                {{ message }}
+                                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                            </div>
+                        {% endfor %}
+                    {% endfor %}
 
-    <button>Login</button>
-</form>
+                    <form method="post" action="{{ path('ui_login') }}">
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                <i class="fa-solid fa-envelope me-1"></i> Email
+                            </label>
+                            <input type="email" name="_username" class="form-control bg-dark text-white border-secondary rounded-pill px-4 py-3"
+                                   placeholder="player@email.com" required autofocus
+                                   value="{{ last_username is defined ? last_username : '' }}">
+                        </div>
 
-<div class="link">
-    <a href="/forgot-password">Forgot password?</a><br>
-    New here? <a href="/register">Create account</a>
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">
+                                <i class="fa-solid fa-lock me-1"></i> Mot de passe
+                            </label>
+                            <input type="password" name="_password" class="form-control bg-dark text-white border-secondary rounded-pill px-4 py-3"
+                                   placeholder="••••••••" required>
+                        </div>
+
+                        {# <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}"> #}
+
+                        <button type="submit" class="btn btn-primary w-100 rounded-pill py-3 fw-bold" style="background: linear-gradient(90deg, #8833ff, #6366f1); border: none;">
+                            <i class="fa-solid fa-right-to-bracket me-2"></i> Se connecter
+                        </button>
+                    </form>
+
+                    <div class="text-center mt-4">
+                        {# <a href="{{ path('ui_forgot_password') }}" class="text-secondary text-decoration-none small">Mot de passe oublié ?</a> #}
+                        <hr class="border-secondary my-3">
+                        <p class="text-secondary mb-0">Pas encore de compte ?
+                            <a href="{{ path('ui_register') }}" class="fw-bold text-decoration-none" style="color: #8833ff;">Créer un compte</a>
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
 {% endblock %}

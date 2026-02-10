@@ -1,0 +1,27 @@
+{% extends 'base.html.twig' %}
+{% block title %}Edit Player{% endblock %}
+
+{% block body %}
+  {% set actions %}
+    <a class="am-btn" href="{{ path('app_player_index') }}">Retour</a>
+  {% endset %}
+
+  {% set body %}
+    {{ include('player/_form.html.twig', { form: form, button_label: 'Mettre à jour' }) }}
+    <div class="am-formActions">
+      {{ include('player/_delete_form.html.twig') }}
+    </div>
+  {% endset %}
+
+  {{ include('_ui/page_card.html.twig', {
+    title: 'Modifier joueur',
+    subtitle: 'Mettre à jour les informations',
+    actions: actions,
+    body: body
+  }) }}
+{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  {{ include('_ui/am_styles.html.twig') }}
+{% endblock %}

@@ -1,26 +1,36 @@
 {# templates/tournoi/_form.html.twig #}
-{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-    
-    {% for field in form %}
-        {% if field.vars.name != '_token' %}
-            <div class="mb-4">
-                {{ form_label(field, null, {'label_attr': {'class': 'form-label'}}) }}
-                {{ form_widget(field, {'attr': {'class': 'form-control', 'placeholder': field.vars.attr.placeholder|default('')}}) }}
-                <div class="form-text text-danger">
-                    {{ form_errors(field) }}
-                </div>
+
+<div class="gaming-card w-100" style="margin-top: 0; max-width: 100%;">
+    {{ form_start(form) }}
+        
+        <div class="text-start mb-3">
+            {{ form_label(form.nom, "Nom du Tournoi", {'label_attr': {'class': 'small text-muted mb-1'}}) }}
+            {{ form_widget(form.nom, {'attr': {'class': 'form-control gaming-input', 'placeholder': 'Ex: Championnat d\'Hiver'}}) }}
+            {{ form_errors(form.nom) }}
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 text-start mb-3">
+                {{ form_label(form.dateDebut, "Date de début", {'label_attr': {'class': 'small text-muted mb-1'}}) }}
+                {{ form_widget(form.dateDebut, {'attr': {'class': 'form-control gaming-input'}}) }}
+                {{ form_errors(form.dateDebut) }}
             </div>
-        {% endif %}
-    {% endfor %}
+            
+            <div class="col-md-6 text-start mb-3">
+                {{ form_label(form.jeu, "Sélectionner le Jeu", {'label_attr': {'class': 'small text-muted mb-1'}}) }}
+                {{ form_widget(form.jeu, {'attr': {'class': 'form-select gaming-input'}}) }}
+                {{ form_errors(form.jeu) }}
+            </div>
+        </div>
 
-    <div class="d-flex align-items-center gap-3 mt-5">
-        <button class="btn btn-primary">
-            <i class="fa-solid fa-sparkles me-2"></i> {{ button_label|default('Enregistrer le Tournoi') }}
-        </button>
-        <a href="{{ path('app_tournoi_index') }}" class="btn btn-link">
-            Annuler
-        </a>
-    </div>
+        <div class="mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-gradient">
+                {{ button_label|default('🏆 Créer le Tournoi') }}
+            </button>
+            <a href="{{ path('app_tournoi_index') }}" class="btn btn-outline-light rounded-pill px-4">
+                Annuler
+            </a>
+        </div>
 
-    {{ form_rest(form) }}
-{{ form_end(form) }}
+    {{ form_end(form) }}
+</div>

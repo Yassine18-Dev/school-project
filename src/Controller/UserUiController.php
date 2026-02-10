@@ -2,29 +2,49 @@
 
 namespace App\Controller;
 
+use App\Entity\User;
+use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Symfony\Component\Mailer\MailerInterface;
 use Symfony\Component\Mime\Email;
+use Symfony\Component\Mailer\MailerInterface;
 
 class UserUiController extends AbstractController
 {
-    private function getFakeUser(Request $request): array
+    private function getFakeUser(Request $request): User
     {
+        // On crée un User fictif pour l'affichage si aucun user connecté
+        $user = new User();
+        $user->setUsername('PlayerOne');
+        $user->setEmail('playerone@arenamind.tn');
+        $user->setStatus(User::STATUS_ACTIVE);
+        $user->setBio('Compte de démonstration (UI Check)');
+        $user->setFavoriteGame('Valorant');
+        
         $role = $request->query->get('as') === 'admin' ? 'ADMIN' : 'PLAYER';
+        if ($role === 'ADMIN') {
+            $user->setRoles(['ROLE_ADMIN']);
+            $user->setRoleType('ADMIN'); // Si vous avez ce champ
+        } else {
+            $user->setRoleType('PLAYER');
+        }
 
-        return [
-            'username' => 'PlayerOne',
-            'email' => 'playerone@arenamind.tn',
-            'role' => $role,
-            'status' => 'ACTIVE',
-            'registeredAt' => '2026-02-01',
-            'lastActivity' => 'Today 14:30',
-        ];
+        // Pour les dates, on triche un peu car pas de setters publics pour createdAt parfois
+        // Mais votre entité a un constructeur pour createdAt.
+        // lastActivityAt a un setter.
+        $user->setLastActivityAt(new \DateTimeImmutable());
+
+        return $user;
     }
 
+    // NOTE: Si ces routes existent déjà dans SecurityController/RegistrationController,
+    // Symfony prendra la première chargée. Pour éviter les conflits,
+    // on peut commenter celles qui sont gérées ailleurs ou s'assurer qu'elles
+    // pointent vers les mêmes templates.
+
+    /*
     #[Route('/login', name: 'ui_login', methods: ['GET'])]
     public function login(): Response
     {
@@ -36,28 +56,49 @@ class UserUiController extends AbstractController
     {
         return $this->render('user/register.html.twig');
     }
+    */
 
     #[Route('/profile', name: 'ui_profile', methods: ['GET'])]
     public function profile(Request $request): Response
     {
+        /** @var User|null $user */
+        $user = $this->getUser();
+
+        if (!$user) {
+            // Fallback sur le fake user si pas connecté (pour test UI)
+            $user = $this->getFakeUser($request);
+        }
+
         return $this->render('user/profile.html.twig', [
-            'user' => $this->getFakeUser($request),
+            'user' => $user,
         ]);
     }
 
     #[Route('/profile/edit', name: 'ui_profile_edit', methods: ['GET', 'POST'])]
-    public function editProfile(Request $request): Response
+    public function editProfile(Request $request, EntityManagerInterface $em): Response
     {
-        $user = [
-            'username' => 'PlayerOne',
-            'email' => 'playerone@arenamind.tn',
-            'bio' => 'Esports fan • Valorant main • Campus competitor',
-            'favoriteGame' => 'Valorant',
-        ];
+        /** @var User|null $user */
+        $user = $this->getUser();
 
-        if ($request->isMethod('POST')) {
-            $this->addFlash('success', 'Profile updated (UI mode).');
-            return $this->redirectToRoute('ui_profile');
+        if (!$user) {
+            // Mode démo sans sauvegarde réelle
+            $user = $this->getFakeUser($request);
+            if ($request->isMethod('POST')) {
+                $this->addFlash('success', 'Profil mis à jour (Mode Simulation UI).');
+                return $this->redirectToRoute('ui_profile');
+            }
+        } else {
+            // Mode réel avec sauvegarde DB
+            if ($request->isMethod('POST')) {
+                $user->setUsername($request->request->get('username'));
+                $user->setEmail($request->request->get('email'));
+                $user->setBio($request->request->get('bio'));
+                $user->setFavoriteGame($request->request->get('favoriteGame'));
+                
+                $em->flush();
+                $this->addFlash('success', 'Profil mis à jour avec succès !');
+                return $this->redirectToRoute('ui_profile');
+            }
         }
 
         return $this->render('user/edit_profile.html.twig', [
@@ -66,37 +107,11 @@ class UserUiController extends AbstractController
     }
 
     // Request reset link
+    /*
     #[Route('/forgot-password', name: 'ui_forgot_password', methods: ['GET', 'POST'])]
     public function forgotPassword(Request $request, MailerInterface $mailer): Response
     {
-        if ($request->isMethod('POST')) {
-            $emailTo = trim((string) $request->request->get('email'));
-
-            $token = bin2hex(random_bytes(16));
-            $request->getSession()->set('reset_token', $token);
-
-            $resetPath = $this->generateUrl('ui_reset_password', ['token' => $token], 0);
-            $resetLink = $request->getSchemeAndHttpHost() . $resetPath;
-
-            $email = (new Email())
-                ->from('no-reply@arenamind.tn')
-                ->to($emailTo)
-                ->subject('ArenaMind - Reset your password')
-                ->html($this->renderView('emails/reset_password.html.twig', [
-                    'resetLink' => $resetLink,
-                    'email' => $emailTo,
-                ]));
-
-            try {
-                $mailer->send($email);
-                $this->addFlash('success', 'Reset link sent! Check your email.');
-            } catch (\Throwable $e) {
-                $this->addFlash('error', 'Mailer not configured. Use this link: ' . $resetLink);
-            }
-
-            return $this->redirectToRoute('ui_forgot_password');
-        }
-
+        // ... (Logic commented out to use real ResetPasswordController) ...
         return $this->render('user/forgot_password.html.twig');
     }
 
@@ -104,22 +119,11 @@ class UserUiController extends AbstractController
     #[Route('/reset-password/{token}', name: 'ui_reset_password', methods: ['GET', 'POST'])]
     public function resetPassword(Request $request, string $token): Response
     {
-        $sessionToken = $request->getSession()->get('reset_token');
-
-        if (!$sessionToken || $token !== $sessionToken) {
-            return $this->render('user/reset_password.html.twig', [
-                'valid' => false,
-            ]);
-        }
-
-        if ($request->isMethod('POST')) {
-            $request->getSession()->remove('reset_token');
-            $this->addFlash('success', 'Password updated (UI mode). Now you can login.');
-            return $this->redirectToRoute('ui_login');
-        }
-
+        // ... (Logic commented out to use real ResetPasswordController) ...
         return $this->render('user/reset_password.html.twig', [
             'valid' => true,
         ]);
     }
+    */
 }
+
