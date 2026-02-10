@@ -1,0 +1,16 @@
+<form method="post" action="{{ path('app_jeu_delete', {'id': jeu.id}) }}" onsubmit="return confirm('Êtes-vous sûr de vouloir supprimer définitivement ce jeu ? Cette action est irréversible.');">
+    {# Le jeton CSRF est indispensable pour valider la suppression côté serveur #}
+    <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ jeu.id) }}">
+    
+    <button class="btn" style="background: linear-gradient(135deg, #ff4b2b, #ff416c); border: none; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: transform 0.2s;">
+        <span>🗑️</span> Supprimer le jeu
+    </button>
+</form>
+
+<style>
+    /* Petit effet de survol pour le bouton supprimer */
+    .btn:hover {
+        transform: scale(1.02);
+        opacity: 0.9;
+    }
+</style>

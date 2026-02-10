@@ -1,0 +1,121 @@
+{% extends 'front/base_front.html.twig' %}
+
+{% block title %}Tournois - ArenaMind{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="fw-bold mb-3">Tournois à Venir</h1>
+        <p class="text-secondary lead">Inscrivez-vous et montrez votre talent.</p>
+    </div>
+
+    {# ============ BARRE DE RECHERCHE / FILTRE ============ #}
+    <div class="row justify-content-center mb-5">
+        <div class="col-lg-10">
+            <form method="GET" action="{{ path('app_front_tournaments') }}" class="card bg-card border-0 shadow-sm p-4" style="border-radius: 15px;">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-5">
+                        <input type="text" name="q" class="form-control bg-dark text-white border-secondary rounded-pill px-4" 
+                               placeholder="🔍 Rechercher un tournoi..." value="{{ search }}">
+                    </div>
+                    <div class="col-md-3">
+                        <select name="jeu" class="form-select bg-dark text-white border-secondary rounded-pill px-4">
+                            <option value="">🎮 Tous les jeux</option>
+                            {% for jeu in jeux %}
+                                <option value="{{ jeu.id }}" {{ selectedJeu == jeu.id ? 'selected' : '' }}>{{ jeu.nom }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <select name="sort" class="form-select bg-dark text-white border-secondary rounded-pill px-4">
+                            <option value="ASC" {{ sort == 'ASC' ? 'selected' : '' }}>⬆ Plus ancien</option>
+                            <option value="DESC" {{ sort == 'DESC' ? 'selected' : '' }}>⬇ Plus récent</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100 rounded-pill">
+                            <i class="fa-solid fa-filter me-1"></i> Filtrer
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    {# ============ LISTE DES TOURNOIS ============ #}
+    <div class="row">
+        <div class="col-lg-10 mx-auto">
+            {% for tournoi in tournaments %}
+                <div class="card bg-card border-0 mb-4 shadow-sm hover-scale transition overflow-hidden">
+                    <div class="card-body p-4 d-flex flex-column flex-md-row align-items-center gap-4">
+                        {# Date Badge #}
+                        <div class="text-center rounded-3 bg-dark p-3 border border-secondary border-opacity-25" style="min-width: 100px;">
+                            <div class="h4 fw-bold text-primary mb-0">{{ tournoi.dateDebut|date('d') }}</div>
+                            <div class="text-uppercase small text-muted">{{ tournoi.dateDebut|date('M') }}</div>
+                        </div>
+
+                        {# Info #}
+                        <div class="flex-grow-1 text-center text-md-start">
+                            <div class="d-flex align-items-center gap-2 justify-content-center justify-content-md-start mb-2">
+                                <span class="badge bg-purple bg-opacity-10 text-purple">
+                                    <i class="fa-solid fa-gamepad me-1"></i> {{ tournoi.jeu.nom }}
+                                </span>
+                                {# === BADGE STATUT DYNAMIQUE === #}
+                                {% set statut = tournoi.statut %}
+                                {% if statut == 'À venir' %}
+                                    <span class="badge bg-success bg-opacity-25 text-success">
+                                        <i class="fa-solid fa-clock me-1"></i> {{ statut }}
+                                    </span>
+                                {% elseif statut == 'En cours' %}
+                                    <span class="badge bg-warning bg-opacity-25 text-warning">
+                                        <i class="fa-solid fa-bolt me-1"></i> {{ statut }}
+                                    </span>
+                                {% else %}
+                                    <span class="badge bg-danger bg-opacity-25 text-danger">
+                                        <i class="fa-solid fa-flag-checkered me-1"></i> {{ statut }}
+                                    </span>
+                                {% endif %}
+                            </div>
+                            <h3 class="h4 fw-bold mb-1">{{ tournoi.nom }}</h3>
+                            <p class="text-muted small mb-0">
+                                <i class="fa-regular fa-clock me-1"></i> {{ tournoi.dateDebut|date('H:i') }}
+                                <span class="mx-2">•</span>
+                                <i class="fa-solid fa-users me-1"></i> Ouvert à tous
+                            </p>
+                        </div>
+
+                        {# Action #}
+                        <div>
+                            {% if statut == 'À venir' %}
+                                <a href="{{ path('app_front_tournament_show', {'id': tournoi.id}) }}" class="btn btn-primary px-4 rounded-pill">
+                                    S'inscrire <i class="fa-solid fa-chevron-right ms-2 font-size-xs"></i>
+                                </a>
+                            {% elseif statut == 'En cours' %}
+                                <a href="{{ path('app_front_tournament_show', {'id': tournoi.id}) }}" class="btn btn-warning px-4 rounded-pill">
+                                    En direct <i class="fa-solid fa-bolt ms-2 font-size-xs"></i>
+                                </a>
+                            {% else %}
+                                <a href="{{ path('app_front_tournament_show', {'id': tournoi.id}) }}" class="btn btn-secondary px-4 rounded-pill">
+                                    Voir résultats <i class="fa-solid fa-eye ms-2 font-size-xs"></i>
+                                </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            {% else %}
+                <div class="text-center py-5">
+                    <i class="fa-solid fa-calendar-xmark fa-3x text-secondary mb-3"></i>
+                    <p class="text-muted">Aucun tournoi trouvé pour cette recherche.</p>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .text-purple { color: #8833ff; }
+    .bg-purple { background-color: #8833ff; }
+    .hover-scale { transition: transform 0.2s; }
+    .hover-scale:hover { transform: scale(1.01); }
+</style>
+{% endblock %}

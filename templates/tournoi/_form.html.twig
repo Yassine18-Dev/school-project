@@ -1,0 +1,36 @@
+{# templates/tournoi/_form.html.twig #}
+
+<div class="gaming-card w-100" style="margin-top: 0; max-width: 100%;">
+    {{ form_start(form) }}
+        
+        <div class="text-start mb-3">
+            {{ form_label(form.nom, "Nom du Tournoi", {'label_attr': {'class': 'small text-muted mb-1'}}) }}
+            {{ form_widget(form.nom, {'attr': {'class': 'form-control gaming-input', 'placeholder': 'Ex: Championnat d\'Hiver'}}) }}
+            {{ form_errors(form.nom) }}
+        </div>
+
+        <div class="row">
+            <div class="col-md-6 text-start mb-3">
+                {{ form_label(form.dateDebut, "Date de début", {'label_attr': {'class': 'small text-muted mb-1'}}) }}
+                {{ form_widget(form.dateDebut, {'attr': {'class': 'form-control gaming-input'}}) }}
+                {{ form_errors(form.dateDebut) }}
+            </div>
+            
+            <div class="col-md-6 text-start mb-3">
+                {{ form_label(form.jeu, "Sélectionner le Jeu", {'label_attr': {'class': 'small text-muted mb-1'}}) }}
+                {{ form_widget(form.jeu, {'attr': {'class': 'form-select gaming-input'}}) }}
+                {{ form_errors(form.jeu) }}
+            </div>
+        </div>
+
+        <div class="mt-4 d-flex gap-2">
+            <button type="submit" class="btn btn-gradient">
+                {{ button_label|default('🏆 Créer le Tournoi') }}
+            </button>
+            <a href="{{ path('app_tournoi_index') }}" class="btn btn-outline-light rounded-pill px-4">
+                Annuler
+            </a>
+        </div>
+
+    {{ form_end(form) }}
+</div>

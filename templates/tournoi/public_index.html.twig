@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Tournois Disponibles - ArenaMind{% endblock %}
+
+{% block stylesheets %}
+    {{ parent() }}
+    <style>
+        .tournoi-card {
+            background: #1a1d26;
+            border: 1px solid rgba(136, 51, 255, 0.2);
+            border-radius: 15px;
+            transition: all 0.3s ease;
+            overflow: hidden;
+            height: 100%;
+            position: relative;
+        }
+        .tournoi-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 10px 30px rgba(136, 51, 255, 0.3);
+            border-color: var(--accent-purple, #8833ff);
+        }
+        .card-header-game {
+            background: linear-gradient(45deg, #8833ff, #00d4ff);
+            padding: 12px;
+            font-weight: bold;
+            text-align: center;
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            color: white;
+        }
+        .status-badge {
+            display: inline-block;
+            background: rgba(0, 255, 136, 0.1);
+            color: #00ff88;
+            border: 1px solid #00ff88;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+        }
+        .btn-join {
+            background: linear-gradient(45deg, #00d4ff, #00ff88);
+            color: #0f1219 !important;
+            font-weight: 800;
+            border: none;
+            width: 100%;
+            padding: 12px;
+            border-radius: 0 0 14px 14px;
+            display: block;
+            text-align: center;
+        }
+    </style>
+{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="display-4 fw-bold text-white">🎮 Prochains Tournois</h1>
+        <p class="text-muted">Préparez-vous à entrer dans l'arène</p>
+    </div>
+
+    <div class="row">
+        {% for tournoi in tournois %}
+            <div class="col-md-4 mb-4">
+                <div class="tournoi-card d-flex flex-column">
+                    <div class="card-header-game">
+                        {{ tournoi.jeu }}
+                    </div>
+                    <div class="p-4 flex-grow-1 text-center">
+                        <div class="status-badge">● Inscriptions Ouvertes</div>
+                        <h3 class="text-white mb-3">{{ tournoi.nom }}</h3>
+                        <div class="text-white-50 small">
+                            <p class="mb-1">📅 {{ tournoi.dateDebut|date('d F Y') }}</p>
+                            <p>⏰ {{ tournoi.dateDebut|date('H:i') }}</p>
+                        </div>
+                    </div>
+                    <a href="{{ path('app_tournoi_show', {id: tournoi.id}) }}" class="btn-join text-decoration-none">
+                        S'INSCRIRE MAINTENANT
+                    </a>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12 text-center py-5">
+                <div class="alert alert-dark bg-dark text-white border-primary p-5">
+                    <h4 class="text-info">Pas de tournois publics pour le moment.</h4>
+                    <p class="mb-0">Revenez plus tard pour découvrir les nouvelles compétitions !</p>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

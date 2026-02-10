@@ -1,0 +1,57 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Détails Jeu - ArenaMind{% endblock %}
+
+{% block body %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 80vh;">
+    <div class="card bg-dark text-white border-0 shadow-lg overflow-hidden" style="width: 100%; max-width: 800px; border-radius: 20px;">
+        <div class="row g-0">
+            <div class="col-md-5 position-relative">
+                <img src="{{ jeu.image }}" 
+                     alt="{{ jeu.nom }}" 
+                     class="w-100 h-100 object-fit-cover position-absolute"
+                     style="min-height: 300px;"
+                     onerror="this.src='https://placehold.co/400x600/1a1d26/white?text=🎮'">
+                <!-- Overlay gradient -->
+                <div class="position-absolute top-0 start-0 w-100 h-100 d-md-none" style="background: linear-gradient(to bottom, transparent 0%, #0f1116 100%);"></div>
+            </div>
+            <div class="col-md-7">
+                <div class="card-body p-4 p-md-5 d-flex flex-column h-100">
+                    <div class="mb-auto">
+                        <div class="d-flex justify-content-between align-items-start mb-3">
+                            <span class="badge bg-primary bg-opacity-10 text-primary border border-primary border-opacity-25">Jeu #{{ jeu.id }}</span>
+                            <div class="dropdown">
+                                <button class="btn btn-link text-muted p-0" type="button" data-bs-toggle="dropdown">
+                                    <i class="fa-solid fa-ellipsis-vertical"></i>
+                                </button>
+                                <ul class="dropdown-menu dropdown-menu-dark dropdown-menu-end">
+                                    <li><a class="dropdown-item" href="{{ path('app_jeu_edit', {'id': jeu.id}) }}"><i class="fa-solid fa-pen me-2"></i> Modifier</a></li>
+                                    <li><hr class="dropdown-divider"></li>
+                                    <li>
+                                        <form method="post" action="{{ path('app_jeu_delete', {'id': jeu.id}) }}" onsubmit="return confirm('Supprimer ce jeu ?');" class="d-inline">
+                                            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ jeu.id) }}">
+                                            <button class="dropdown-item text-danger"><i class="fa-solid fa-trash me-2"></i> Supprimer</button>
+                                        </form>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                        
+                        <h1 class="card-title fw-bold mb-3 display-6">{{ jeu.nom }}</h1>
+                        
+                        <p class="card-text text-secondary mb-4" style="line-height: 1.6;">
+                            {{ jeu.description ?: 'Aucune description disponible pour ce jeu.' }}
+                        </p>
+                    </div>
+
+                    <div class="mt-4 pt-4 border-top border-secondary border-opacity-25">
+                        <a href="{{ path('app_jeu_index') }}" class="btn btn-outline-light">
+                            <i class="fa-solid fa-arrow-left me-2"></i> Retour
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Nouvelle Prédiction - ArenaMind Admin{% endblock %}
+
+{% block body %}
+<div class="container py-4" style="max-width: 800px;">
+    
+    <div class="admin-header">
+        <div class="admin-icon rounded-circle bg-info bg-opacity-10 p-3 text-info">
+            <i class="fa-solid fa-crystal-ball fa-2x"></i>
+        </div>
+        <div>
+            <h1 class="admin-title mb-0">Générer une Prédiction</h1>
+            <p class="text-secondary mb-0">Lancer l'IA pour analyser un tournoi.</p>
+        </div>
+    </div>
+
+    <div class="mt-5">
+        {{ include('prediction/_form.html.twig') }}
+    </div>
+
+</div>
+{% endblock %}

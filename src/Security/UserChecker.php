@@ -11,7 +11,9 @@ class UserChecker implements UserCheckerInterface
 {
     public function checkPreAuth(UserInterface $user): void
     {
-        if (!$user instanceof User) return;
+        if (!$user instanceof User) {
+            return;
+        }
 
         if ($user->getStatus() === User::STATUS_BANNED) {
             throw new CustomUserMessageAccountStatusException('Your account is banned.');
@@ -21,5 +23,7 @@ class UserChecker implements UserCheckerInterface
         }
     }
 
-    public function checkPostAuth(UserInterface $user): void {}
+    public function checkPostAuth(UserInterface $user): void
+    {
+    }
 }
