@@ -1,0 +1,25 @@
+{# Composant: carte page (look proche login) #}
+<div class="am-page">
+  <div class="am-shell">
+    <div class="am-card">
+      <div class="am-card__header">
+        <div>
+          <h1 class="am-title">{{ title|default('') }}</h1>
+          {% if subtitle is defined and subtitle %}
+            <div class="am-subtitle">{{ subtitle }}</div>
+          {% endif %}
+        </div>
+
+        {% if actions is defined and actions %}
+          <div class="am-actions">
+            {{ actions|raw }}
+          </div>
+        {% endif %}
+      </div>
+
+      <div class="am-card__body">
+        {{ body|raw }}
+      </div>
+    </div>
+  </div>
+</div>

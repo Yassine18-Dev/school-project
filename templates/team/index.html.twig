@@ -1,0 +1,78 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Teams{% endblock %}
+
+{% block stylesheets %}
+  {{ parent() }}
+  {{ include('_ui/am_styles.html.twig') }}
+{% endblock %}
+
+{% block body %}
+  {% set nextDir = dir == 'asc' ? 'desc' : 'asc' %}
+
+  {% set actions %}
+    <a class="am-btn am-btn--primary" href="{{ path('app_team_new') }}">+ New Team</a>
+    <a class="am-btn" href="{{ path('app_player_index') }}">Players</a>
+  {% endset %}
+
+  {% set body %}
+    <div class="am-toolbar">
+      <form method="get" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+        <input class="am-input" type="text" name="q" value="{{ q|default('') }}" placeholder="Rechercher une team..." />
+        <select class="am-select" name="sort">
+          <option value="id" {{ sort == 'id' ? 'selected' : '' }}>Tri: ID</option>
+          <option value="name" {{ sort == 'name' ? 'selected' : '' }}>Tri: Nom</option>
+        </select>
+        <select class="am-select" name="dir">
+          <option value="asc" {{ dir == 'asc' ? 'selected' : '' }}>ASC</option>
+          <option value="desc" {{ dir == 'desc' ? 'selected' : '' }}>DESC</option>
+        </select>
+
+        <button class="am-btn" type="submit">Appliquer</button>
+
+        {% if q or sort != 'id' or dir != 'asc' %}
+          <a class="am-btn" href="{{ path('app_team_index') }}">Reset</a>
+        {% endif %}
+      </form>
+
+      <span class="am-pill">{{ teams|length }} résultat(s)</span>
+    </div>
+
+    <table class="am-table">
+      <thead>
+        <tr>
+          <th>
+            <a class="am-link" href="{{ path('app_team_index', { q: q, sort: 'id', dir: sort == 'id' ? nextDir : 'asc' }) }}">ID</a>
+          </th>
+          <th>
+            <a class="am-link" href="{{ path('app_team_index', { q: q, sort: 'name', dir: sort == 'name' ? nextDir : 'asc' }) }}">Nom</a>
+          </th>
+          <th class="am-muted">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for team in teams %}
+          <tr>
+            <td>{{ team.id }}</td>
+            <td>{{ team.name }}</td>
+            <td>
+              <a class="am-btn" href="{{ path('app_team_show', {'id': team.id}) }}">Show</a>
+              <a class="am-btn" href="{{ path('app_team_edit', {'id': team.id}) }}">Edit</a>
+            </td>
+          </tr>
+        {% else %}
+          <tr>
+            <td colspan="3" class="am-muted">Aucune team trouvée.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  {% endset %}
+
+  {{ include('_ui/page_card.html.twig', {
+    title: 'Teams',
+    subtitle: 'Recherche & tri',
+    actions: actions,
+    body: body
+  }) }}
+{% endblock %}
