@@ -1,9 +1,13 @@
 {{ form_start(form) }}
-  <p class="am-help">Remplis les informations puis sauvegarde.</p>
-  {{ form_widget(form) }}
 
-  <div class="am-formActions">
-    <button class="am-btnPrimary">{{ button_label|default('Enregistrer') }}</button>
-    <a class="am-btn" href="{{ path('app_player_index') }}">Retour</a>
-  </div>
+  {{ form_row(form.pseudo) }}
+  {{ form_row(form.firstName) }}
+  {{ form_row(form.lastName) }}
+  {{ form_row(form.role) }}
+  {{ form_row(form.birthDate) }}
+  {{ form_row(form.photo) }}
+  {{ form_row(form.team) }}
+
+  <button class="btn btn-primary">{{ button_label|default('Sauvegarder') }}</button>
+
 {{ form_end(form) }}

@@ -1,33 +1,48 @@
-{% extends 'base.html.twig' %}
+{% extends 'layouts/arenamind.html.twig' %}
+
 {% block title %}Player{% endblock %}
 
 {% block body %}
-  {% set actions %}
-    <a class="am-btn" href="{{ path('app_player_index') }}">Retour</a>
-    <a class="am-btnPrimary" href="{{ path('app_player_edit', {'id': player.id}) }}">Edit</a>
-  {% endset %}
 
-  {% set body %}
-    <div class="am-tableWrap">
-      <table class="am-table">
-        <tbody>
-          <tr><th>ID</th><td>{{ player.id }}</td></tr>
-          <tr><th>Nom</th><td>{{ player.name }}</td></tr>
-        </tbody>
-      </table>
-    </div>
+{% set actions %}
+  <a class="am-btn am-btn--ghost" href="{{ path('app_player_index') }}">Retour</a>
+  <a class="am-btn" href="{{ path('app_player_edit', {id: player.id}) }}">Edit</a>
+{% endset %}
 
-    <div class="am-formActions">
-      {{ include('player/_delete_form.html.twig') }}
-    </div>
-  {% endset %}
+{% set body %}
+  <table class="am-table">
+    <tbody>
+      <tr><th>Id</th><td>{{ player.id }}</td></tr>
+      <tr><th>Pseudo</th><td>{{ player.pseudo }}</td></tr>
+      <tr><th>Prénom</th><td>{{ player.firstName }}</td></tr>
+      <tr><th>Nom</th><td>{{ player.lastName }}</td></tr>
+      <tr><th>Rôle</th><td>{{ player.role ?? '—' }}</td></tr>
+      <tr><th>BirthDate</th><td>{{ player.birthDate ? player.birthDate|date('Y-m-d') : '—' }}</td></tr>
+      <tr><th>Team</th><td>{{ player.team ? player.team.name : '— (solo)' }}</td></tr>
+      <tr>
+        <th>Photo</th>
+        <td>
+          {% if player.photo %}
+            <img class="am-photo" src="{{ player.photo }}" alt="photo">
+          {% else %}
+            —
+          {% endif %}
+        </td>
+      </tr>
+      <tr><th>CreatedAt</th><td>{{ player.createdAt ? player.createdAt|date('Y-m-d H:i') : '—' }}</td></tr>
+    </tbody>
+  </table>
 
-  {{ include('_ui/page_card.html.twig', {
-    title: 'Détails joueur',
-    subtitle: 'Informations',
-    actions: actions,
-    body: body
-  }) }}
+  {{ include('player/_delete_form.html.twig') }}
+{% endset %}
+
+{{ include('_ui/page_card.html.twig', {
+  title: 'Player',
+  subtitle: 'Détails du joueur',
+  actions: actions,
+  body: body
+}) }}
+
 {% endblock %}
 
 {% block stylesheets %}

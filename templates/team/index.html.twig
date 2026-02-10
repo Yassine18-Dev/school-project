@@ -1,4 +1,4 @@
-{% extends 'base.html.twig' %}
+{% extends 'layouts/arenamind.html.twig' %}
 
 {% block title %}Teams{% endblock %}
 
@@ -16,38 +16,24 @@
   {% endset %}
 
   {% set body %}
-    <div class="am-toolbar">
-      <form method="get" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-        <input class="am-input" type="text" name="q" value="{{ q|default('') }}" placeholder="Rechercher une team..." />
-        <select class="am-select" name="sort">
-          <option value="id" {{ sort == 'id' ? 'selected' : '' }}>Tri: ID</option>
-          <option value="name" {{ sort == 'name' ? 'selected' : '' }}>Tri: Nom</option>
-        </select>
-        <select class="am-select" name="dir">
-          <option value="asc" {{ dir == 'asc' ? 'selected' : '' }}>ASC</option>
-          <option value="desc" {{ dir == 'desc' ? 'selected' : '' }}>DESC</option>
-        </select>
-
-        <button class="am-btn" type="submit">Appliquer</button>
-
-        {% if q or sort != 'id' or dir != 'asc' %}
-          <a class="am-btn" href="{{ path('app_team_index') }}">Reset</a>
-        {% endif %}
-      </form>
-
-      <span class="am-pill">{{ teams|length }} résultat(s)</span>
-    </div>
+    <form class="am-toolbar" method="get" action="{{ path('app_team_index') }}">
+      <input class="am-input" type="text" name="q" placeholder="Search team..." value="{{ q }}">
+      <input type="hidden" name="sort" value="{{ sort }}">
+      <input type="hidden" name="dir" value="{{ dir }}">
+      <button class="am-btn" type="submit">Search</button>
+      <a class="am-btn am-btn--ghost" href="{{ path('app_team_index') }}">Reset</a>
+    </form>
 
     <table class="am-table">
       <thead>
         <tr>
           <th>
-            <a class="am-link" href="{{ path('app_team_index', { q: q, sort: 'id', dir: sort == 'id' ? nextDir : 'asc' }) }}">ID</a>
+            <a href="{{ path('app_team_index', { q: q, sort: 'id', dir: sort == 'id' ? nextDir : 'asc' }) }}">#</a>
           </th>
           <th>
-            <a class="am-link" href="{{ path('app_team_index', { q: q, sort: 'name', dir: sort == 'name' ? nextDir : 'asc' }) }}">Nom</a>
+            <a href="{{ path('app_team_index', { q: q, sort: 'name', dir: sort == 'name' ? nextDir : 'asc' }) }}">Name</a>
           </th>
-          <th class="am-muted">Actions</th>
+          <th style="width: 260px;">Actions</th>
         </tr>
       </thead>
       <tbody>
@@ -55,14 +41,15 @@
           <tr>
             <td>{{ team.id }}</td>
             <td>{{ team.name }}</td>
-            <td>
-              <a class="am-btn" href="{{ path('app_team_show', {'id': team.id}) }}">Show</a>
-              <a class="am-btn" href="{{ path('app_team_edit', {'id': team.id}) }}">Edit</a>
+            <td class="am-actions">
+              <a class="am-btn am-btn--small" href="{{ path('app_team_show', {id: team.id}) }}">View</a>
+              <a class="am-btn am-btn--small" href="{{ path('app_team_edit', {id: team.id}) }}">Edit</a>
+              <a class="am-btn am-btn--small" href="{{ path('app_team_members', {id: team.id}) }}">Members</a>
             </td>
           </tr>
         {% else %}
           <tr>
-            <td colspan="3" class="am-muted">Aucune team trouvée.</td>
+            <td colspan="3" class="am-empty">No teams found.</td>
           </tr>
         {% endfor %}
       </tbody>
@@ -71,7 +58,7 @@
 
   {{ include('_ui/page_card.html.twig', {
     title: 'Teams',
-    subtitle: 'Recherche & tri',
+    subtitle: 'Liste des équipes',
     actions: actions,
     body: body
   }) }}

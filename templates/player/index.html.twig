@@ -1,89 +1,50 @@
-{% extends 'base.html.twig' %}
+{% extends 'layouts/arenamind.html.twig' %}
 
 {% block title %}Players{% endblock %}
 
-{% block stylesheets %}
-  {{ parent() }}
-  {{ include('_ui/am_styles.html.twig') }}
-{% endblock %}
-
 {% block body %}
-  {% set nextDir = dir == 'asc' ? 'desc' : 'asc' %}
+  <div class="am-wrap">
+    <div class="am-card">
+      <div class="am-card__header">
+        <div>
+          <h1 class="am-title">Players</h1>
+          <p class="am-subtitle">Users avec roleType = PLAYER / CAPTAIN</p>
+        </div>
 
-  {% set actions %}
-    <a class="am-btn am-btn--primary" href="{{ path('app_player_new') }}">+ New Player</a>
-    <a class="am-btn" href="{{ path('app_team_index') }}">Teams</a>
-  {% endset %}
+        <form method="get" class="am-search">
+          <input class="am-input" type="text" name="q" value="{{ q }}" placeholder="Rechercher email/username..." />
+          <button class="am-btn am-btn--primary" type="submit">Search</button>
+        </form>
+      </div>
 
-  {% set body %}
-    <div class="am-toolbar">
-      <form method="get" style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
-        <input class="am-input" type="text" name="q" value="{{ q|default('') }}" placeholder="Rechercher (player ou team)..." />
-        <select class="am-select" name="sort">
-          <option value="id" {{ sort == 'id' ? 'selected' : '' }}>Tri: ID</option>
-          <option value="name" {{ sort == 'name' ? 'selected' : '' }}>Tri: Nom joueur</option>
-          <option value="team" {{ sort == 'team' ? 'selected' : '' }}>Tri: Team</option>
-        </select>
-        <select class="am-select" name="dir">
-          <option value="asc" {{ dir == 'asc' ? 'selected' : '' }}>ASC</option>
-          <option value="desc" {{ dir == 'desc' ? 'selected' : '' }}>DESC</option>
-        </select>
-
-        <button class="am-btn" type="submit">Appliquer</button>
-
-        {% if q or sort != 'id' or dir != 'asc' %}
-          <a class="am-btn" href="{{ path('app_player_index') }}">Reset</a>
-        {% endif %}
-      </form>
-
-      <span class="am-pill">{{ players|length }} résultat(s)</span>
+      <div class="am-card__body">
+        <table class="am-table">
+          <thead>
+            <tr>
+              <th><a class="am-link" href="{{ path('app_player_index', { q: q, sort: 'id', dir: dir == 'asc' ? 'desc' : 'asc' }) }}">ID</a></th>
+              <th><a class="am-link" href="{{ path('app_player_index', { q: q, sort: 'username', dir: dir == 'asc' ? 'desc' : 'asc' }) }}">Username</a></th>
+              <th><a class="am-link" href="{{ path('app_player_index', { q: q, sort: 'email', dir: dir == 'asc' ? 'desc' : 'asc' }) }}">Email</a></th>
+              <th><a class="am-link" href="{{ path('app_player_index', { q: q, sort: 'roleType', dir: dir == 'asc' ? 'desc' : 'asc' }) }}">RoleType</a></th>
+              <th>Team</th>
+              <th><a class="am-link" href="{{ path('app_player_index', { q: q, sort: 'status', dir: dir == 'asc' ? 'desc' : 'asc' }) }}">Status</a></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in players %}
+              <tr>
+                <td>{{ u.id }}</td>
+                <td>{{ u.username }}</td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.roleType }}</td>
+                <td>{{ u.team ? u.team.name : '—' }}</td>
+                <td>{{ u.status }}</td>
+              </tr>
+            {% else %}
+              <tr><td colspan="6" class="am-empty">Aucun player/captain.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
     </div>
-
-    <table class="am-table">
-      <thead>
-        <tr>
-          <th>
-            <a class="am-link" href="{{ path('app_player_index', { q: q, sort: 'id', dir: sort == 'id' ? nextDir : 'asc' }) }}">ID</a>
-          </th>
-          <th>
-            <a class="am-link" href="{{ path('app_player_index', { q: q, sort: 'name', dir: sort == 'name' ? nextDir : 'asc' }) }}">Nom</a>
-          </th>
-          <th>Team</th>
-          <th>Photo</th>
-          <th class="am-muted">Actions</th>
-        </tr>
-      </thead>
-      <tbody>
-        {% for player in players %}
-          <tr>
-            <td>{{ player.id }}</td>
-            <td>{{ player.name }}</td>
-            <td>{{ player.team ? player.team.name : '—' }}</td>
-            <td>
-              {% if player.photo %}
-                <img class="am-photo" src="{{ player.photo }}" alt="photo">
-              {% else %}
-                <span class="am-muted">—</span>
-              {% endif %}
-            </td>
-            <td>
-              <a class="am-btn" href="{{ path('app_player_show', {'id': player.id}) }}">Show</a>
-              <a class="am-btn" href="{{ path('app_player_edit', {'id': player.id}) }}">Edit</a>
-            </td>
-          </tr>
-        {% else %}
-          <tr>
-            <td colspan="5" class="am-muted">Aucun joueur trouvé.</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  {% endset %}
-
-  {{ include('_ui/page_card.html.twig', {
-    title: 'Players',
-    subtitle: 'Recherche & tri',
-    actions: actions,
-    body: body
-  }) }}
+  </div>
 {% endblock %}

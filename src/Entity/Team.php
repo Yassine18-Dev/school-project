@@ -15,65 +15,42 @@ class Team
     #[ORM\Column]
     private ?int $id = null;
 
-    // ✅ Champ d'affichage pour les selects (Player -> Team)
     #[ORM\Column(length: 255)]
     private ?string $name = null;
 
-    // ✅ Relation: 1 Team -> N Players
-    #[ORM\OneToMany(mappedBy: 'team', targetEntity: Player::class, orphanRemoval: true)]
-    private Collection $players;
+    #[ORM\Column(length: 255, nullable: true)]
+    private ?string $logo = null;
+
+    #[ORM\Column(type: 'text', nullable: true)]
+    private ?string $bio = null;
+
+    /**
+     * 1 Team -> N Users
+     */
+    #[ORM\OneToMany(mappedBy: 'team', targetEntity: User::class)]
+    private Collection $members;
 
     public function __construct()
     {
-        $this->players = new ArrayCollection();
+        $this->members = new ArrayCollection();
     }
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    public function getId(): ?int { return $this->id; }
 
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
+    public function getName(): ?string { return $this->name; }
+    public function setName(string $name): self { $this->name = $name; return $this; }
 
-    public function setName(string $name): self
-    {
-        $this->name = $name;
-        return $this;
-    }
+    public function getLogo(): ?string { return $this->logo; }
+    public function setLogo(?string $logo): self { $this->logo = $logo; return $this; }
+
+    public function getBio(): ?string { return $this->bio; }
+    public function setBio(?string $bio): self { $this->bio = $bio; return $this; }
 
     /**
-     * @return Collection<int, Player>
+     * @return Collection<int, User>
      */
-    public function getPlayers(): Collection
-    {
-        return $this->players;
-    }
+    public function getMembers(): Collection { return $this->members; }
 
-    public function addPlayer(Player $player): self
-    {
-        if (!$this->players->contains($player)) {
-            $this->players->add($player);
-            $player->setTeam($this);
-        }
-
-        return $this;
-    }
-
-    public function removePlayer(Player $player): self
-    {
-        if ($this->players->removeElement($player)) {
-            if ($player->getTeam() === $this) {
-                $player->setTeam(null);
-            }
-        }
-
-        return $this;
-    }
-
-    // ✅ utile : quand Symfony affiche une Team en texte
     public function __toString(): string
     {
         return (string) $this->name;

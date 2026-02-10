@@ -5,8 +5,10 @@ namespace App\Repository;
 use App\Entity\User;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
-use Doctrine\ORM\QueryBuilder;
 
+/**
+ * @extends ServiceEntityRepository<User>
+ */
 class UserRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
@@ -14,20 +16,35 @@ class UserRepository extends ServiceEntityRepository
         parent::__construct($registry, User::class);
     }
 
-    public function qbSearchSort(?string $q, string $sort, string $dir): QueryBuilder
+    public function findPlayersAndCaptains(?string $q = null, string $sort = 'id', string $dir = 'DESC'): array
     {
-        $allowedSort = ['id','username','email','roleType','status','createdAt'];
-        if (!in_array($sort, $allowedSort, true)) $sort = 'id';
-
+        $allowedSort = ['id', 'email', 'username', 'roleType', 'status'];
+        if (!in_array($sort, $allowedSort, true)) {
+            $sort = 'id';
+        }
         $dir = strtoupper($dir) === 'ASC' ? 'ASC' : 'DESC';
 
-        $qb = $this->createQueryBuilder('u');
+        $qb = $this->createQueryBuilder('u')
+            ->andWhere('u.roleType IN (:types)')
+            ->setParameter('types', ['PLAYER', 'CAPTAIN'])
+            ->orderBy('u.' . $sort, $dir);
 
-        if ($q) {
-            $qb->andWhere('u.username LIKE :q OR u.email LIKE :q OR u.status LIKE :q OR u.roleType LIKE :q')
-               ->setParameter('q', '%'.$q.'%');
+        if ($q !== null && trim($q) !== '') {
+            $qb->andWhere('u.email LIKE :q OR u.username LIKE :q')
+               ->setParameter('q', '%' . trim($q) . '%');
         }
 
-        return $qb->orderBy('u.'.$sort, $dir);
+        return $qb->getQuery()->getResult();
+    }
+
+    public function findAvailablePlayersAndCaptains(): array
+    {
+        return $this->createQueryBuilder('u')
+            ->andWhere('u.roleType IN (:types)')
+            ->setParameter('types', ['PLAYER', 'CAPTAIN'])
+            ->andWhere('u.team IS NULL')
+            ->orderBy('u.id', 'DESC')
+            ->getQuery()
+            ->getResult();
     }
 }

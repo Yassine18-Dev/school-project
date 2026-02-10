@@ -1,0 +1,89 @@
+{% extends 'layouts/arenamind.html.twig' %}
+
+{% block title %}Team Members{% endblock %}
+
+{% block body %}
+  <div class="am-wrap">
+    <div class="am-card">
+      <div class="am-card__header">
+        <div>
+          <h1 class="am-title">Team: {{ team.name }}</h1>
+          <p class="am-subtitle">Ajouter / retirer des players</p>
+
+          {% if team.logo %}
+            <div style="margin-top:10px;">
+              <img src="{{ team.logo }}" alt="logo" style="height:48px;border-radius:10px;">
+            </div>
+          {% endif %}
+
+          {% if team.bio %}
+            <p style="margin-top:10px;opacity:.9;">{{ team.bio }}</p>
+          {% endif %}
+        </div>
+
+        <div class="am-actions">
+          <a class="am-btn" href="{{ path('app_team_edit', {id: team.id}) }}">Edit team</a>
+          <a class="am-btn" href="{{ path('app_team_show', {id: team.id}) }}">Retour</a>
+        </div>
+      </div>
+
+      <div class="am-card__body">
+        <h3 class="am-h3">Membres actuels</h3>
+
+        <table class="am-table">
+          <thead>
+            <tr>
+              <th>ID</th><th>Username</th><th>Email</th><th>RoleType</th><th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in team.members %}
+              <tr>
+                <td>{{ u.id }}</td>
+                <td>{{ u.username }}</td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.roleType }}</td>
+                <td>
+                  <form method="post" action="{{ path('app_team_remove_member', {teamId: team.id, userId: u.id}) }}" onsubmit="return confirm('Retirer ce membre ?')">
+                    <button class="am-btn am-btn--danger" type="submit">Retirer</button>
+                  </form>
+                </td>
+              </tr>
+            {% else %}
+              <tr><td colspan="5" class="am-empty">Aucun membre.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <div style="height:16px;"></div>
+
+        <h3 class="am-h3">Players disponibles (sans team)</h3>
+
+        <table class="am-table">
+          <thead>
+            <tr>
+              <th>ID</th><th>Username</th><th>Email</th><th>RoleType</th><th>Action</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in availablePlayers %}
+              <tr>
+                <td>{{ u.id }}</td>
+                <td>{{ u.username }}</td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.roleType }}</td>
+                <td>
+                  <form method="post" action="{{ path('app_team_add_member', {teamId: team.id, userId: u.id}) }}">
+                    <button class="am-btn am-btn--primary" type="submit">Ajouter</button>
+                  </form>
+                </td>
+              </tr>
+            {% else %}
+              <tr><td colspan="5" class="am-empty">Aucun player disponible.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+{% endblock %}

@@ -65,6 +65,11 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column(nullable: true)]
     private ?\DateTimeImmutable $resetExpiresAt = null;
 
+    // ✅ Team nullable (player peut être solo)
+    #[ORM\ManyToOne(inversedBy: 'members')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Team $team = null;
+
     public function __construct()
     {
         $this->createdAt = new \DateTimeImmutable();
@@ -107,6 +112,10 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
         if (!hash_equals($this->resetToken, $token)) return false;
         return $this->resetExpiresAt->getTimestamp() > time();
     }
+
+    // ✅ Team getters/setters
+    public function getTeam(): ?Team { return $this->team; }
+    public function setTeam(?Team $team): static { $this->team = $team; return $this; }
 
     // Symfony Security
     public function getUserIdentifier(): string { return (string) $this->email; }

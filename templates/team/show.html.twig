@@ -1,36 +1,62 @@
-{% extends 'base.html.twig' %}
+{% extends 'layouts/arenamind.html.twig' %}
+
 {% block title %}Team{% endblock %}
 
 {% block body %}
-  {% set actions %}
-    <a class="am-btn" href="{{ path('app_team_index') }}">Retour</a>
-    <a class="am-btnPrimary" href="{{ path('app_team_edit', {'id': team.id}) }}">Edit</a>
-  {% endset %}
+  <div class="am-wrap">
+    <div class="am-card">
+      <div class="am-card__header">
+        <div>
+          <h1 class="am-title">{{ team.name }}</h1>
+          <p class="am-subtitle">Profil team</p>
 
-  {% set body %}
-    <div class="am-tableWrap">
-      <table class="am-table">
-        <tbody>
-          <tr><th>ID</th><td>{{ team.id }}</td></tr>
-          <tr><th>Nom</th><td>{{ team.name }}</td></tr>
-        </tbody>
-      </table>
+          {% if team.logo %}
+            <div style="margin-top:10px;">
+              <img src="{{ team.logo }}" alt="logo" style="height:56px;border-radius:12px;">
+            </div>
+          {% endif %}
+
+          {% if team.bio %}
+            <p style="margin-top:10px;opacity:.9;">{{ team.bio }}</p>
+          {% endif %}
+        </div>
+
+        <div class="am-actions">
+          <a class="am-btn am-btn--primary" href="{{ path('app_team_members', {id: team.id}) }}">Gérer joueurs</a>
+          <a class="am-btn" href="{{ path('app_team_edit', {id: team.id}) }}">Edit</a>
+          <a class="am-btn" href="{{ path('app_team_index') }}">Back</a>
+        </div>
+      </div>
+
+      <div class="am-card__body">
+        <h3 class="am-h3">Membres</h3>
+
+        <table class="am-table">
+          <thead>
+            <tr>
+              <th>ID</th><th>Username</th><th>Email</th><th>RoleType</th><th>Status</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for u in team.members %}
+              <tr>
+                <td>{{ u.id }}</td>
+                <td>{{ u.username }}</td>
+                <td>{{ u.email }}</td>
+                <td>{{ u.roleType }}</td>
+                <td>{{ u.status }}</td>
+              </tr>
+            {% else %}
+              <tr><td colspan="5" class="am-empty">Aucun membre.</td></tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <form method="post" action="{{ path('app_team_delete', {'id': team.id}) }}" onsubmit="return confirm('Supprimer cette team ?');" style="margin-top:16px;">
+          <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ team.id) }}">
+          <button class="am-btn am-btn--danger">Delete</button>
+        </form>
+      </div>
     </div>
-
-    <div class="am-formActions">
-      {{ include('team/_delete_form.html.twig') }}
-    </div>
-  {% endset %}
-
-  {{ include('_ui/page_card.html.twig', {
-    title: 'Détails équipe',
-    subtitle: 'Informations',
-    actions: actions,
-    body: body
-  }) }}
-{% endblock %}
-
-{% block stylesheets %}
-  {{ parent() }}
-  {{ include('_ui/am_styles.html.twig') }}
+  </div>
 {% endblock %}

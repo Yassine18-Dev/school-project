@@ -16,28 +16,28 @@ class TeamRepository extends ServiceEntityRepository
         parent::__construct($registry, Team::class);
     }
 
-    //    /**
-    //     * @return Team[] Returns an array of Team objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('t.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * @return Team[]
+     */
+    public function searchAndSort(string $q, string $sort, string $dir): array
+    {
+        $qb = $this->createQueryBuilder('t');
 
-    //    public function findOneBySomeField($value): ?Team
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        if ($q !== '') {
+            $qb->andWhere('LOWER(t.name) LIKE :q')
+               ->setParameter('q', '%'.mb_strtolower($q).'%');
+        }
+
+        // whitelist côté repo aussi
+        $sortMap = [
+            'id' => 't.id',
+            'name' => 't.name',
+        ];
+        $sortField = $sortMap[$sort] ?? 't.id';
+        $direction = strtolower($dir) === 'desc' ? 'DESC' : 'ASC';
+
+        return $qb->orderBy($sortField, $direction)
+                  ->getQuery()
+                  ->getResult();
+    }
 }

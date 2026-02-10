@@ -6,6 +6,7 @@ use App\Repository\PlayerRepository;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: PlayerRepository::class)]
+#[ORM\HasLifecycleCallbacks]
 class Player
 {
     #[ORM\Id]
@@ -13,53 +14,77 @@ class Player
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255)]
-    private ?string $name = null;
+    // Pseudo (ex: gamerTag)
+    #[ORM\Column(length: 100)]
+    private ?string $pseudo = null;
 
-    // ✅ Relation: N Players -> 1 Team
-    #[ORM\ManyToOne(inversedBy: 'players')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Team $team = null;
+    #[ORM\Column(length: 100)]
+    private ?string $firstName = null;
 
-    // ✅ Exemple champs optionnels (photo/logo en string = chemin/URL)
+    #[ORM\Column(length: 100)]
+    private ?string $lastName = null;
+
+    // Role (ex: Carry, Support, Mid, etc.)
+    #[ORM\Column(length: 50, nullable: true)]
+    private ?string $role = null;
+
+    // Date naissance
+    #[ORM\Column(type: 'date', nullable: true)]
+    private ?\DateTimeInterface $birthDate = null;
+
+    // Photo (URL ou chemin)
     #[ORM\Column(length: 255, nullable: true)]
     private ?string $photo = null;
 
-    public function getId(): ?int
+    // ✅ Team optionnelle (joueur solo possible)
+    #[ORM\ManyToOne(inversedBy: 'players')]
+    #[ORM\JoinColumn(nullable: true, onDelete: 'SET NULL')]
+    private ?Team $team = null;
+
+    #[ORM\Column]
+    private ?\DateTimeImmutable $createdAt = null;
+
+    #[ORM\PrePersist]
+    public function onPrePersist(): void
     {
-        return $this->id;
+        if ($this->createdAt === null) {
+            $this->createdAt = new \DateTimeImmutable();
+        }
     }
 
-    public function getName(): ?string
+    public function getId(): ?int { return $this->id; }
+
+    public function getPseudo(): ?string { return $this->pseudo; }
+    public function setPseudo(string $pseudo): self { $this->pseudo = $pseudo; return $this; }
+
+    public function getFirstName(): ?string { return $this->firstName; }
+    public function setFirstName(string $firstName): self { $this->firstName = $firstName; return $this; }
+
+    public function getLastName(): ?string { return $this->lastName; }
+    public function setLastName(string $lastName): self { $this->lastName = $lastName; return $this; }
+
+    public function getRole(): ?string { return $this->role; }
+    public function setRole(?string $role): self { $this->role = $role; return $this; }
+
+    public function getBirthDate(): ?\DateTimeInterface { return $this->birthDate; }
+    public function setBirthDate(?\DateTimeInterface $birthDate): self { $this->birthDate = $birthDate; return $this; }
+
+    public function getPhoto(): ?string { return $this->photo; }
+    public function setPhoto(?string $photo): self { $this->photo = $photo; return $this; }
+
+    public function getTeam(): ?Team { return $this->team; }
+    public function setTeam(?Team $team): self { $this->team = $team; return $this; }
+
+    public function getCreatedAt(): ?\DateTimeImmutable { return $this->createdAt; }
+    public function setCreatedAt(\DateTimeImmutable $createdAt): self { $this->createdAt = $createdAt; return $this; }
+
+    public function getFullName(): string
     {
-        return $this->name;
+        return trim(($this->firstName ?? '').' '.($this->lastName ?? ''));
     }
 
-    public function setName(string $name): self
+    public function __toString(): string
     {
-        $this->name = $name;
-        return $this;
-    }
-
-    public function getTeam(): ?Team
-    {
-        return $this->team;
-    }
-
-    public function setTeam(?Team $team): self
-    {
-        $this->team = $team;
-        return $this;
-    }
-
-    public function getPhoto(): ?string
-    {
-        return $this->photo;
-    }
-
-    public function setPhoto(?string $photo): self
-    {
-        $this->photo = $photo;
-        return $this;
+        return $this->pseudo ?: ('Player #'.$this->id);
     }
 }
