@@ -1,0 +1,9 @@
+{{ form_start(form) }}
+  <p class="am-help">Remplis les informations puis sauvegarde.</p>
+  {{ form_widget(form) }}
+
+  <div class="am-formActions">
+    <button class="am-btnPrimary">{{ button_label|default('Enregistrer') }}</button>
+    <a class="am-btn" href="{{ path('app_team_index') }}">Retour</a>
+  </div>
+{{ form_end(form) }}

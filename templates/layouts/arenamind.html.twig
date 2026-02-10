@@ -1,0 +1,22 @@
+{# templates/layouts/arenamind.html.twig #}
+{% extends 'base.html.twig' %}
+
+{% block body %}
+  <div class="page-bg">
+    {# Garde ton header/nav existant de base.html.twig.
+       Si ton base.html.twig contient déjà la navbar, ce wrapper suffit.
+       Sinon, tu peux inclure un partial navbar ici. #}
+
+    <div class="container py-5">
+      <div class="card-glow mx-auto" style="max-width: 980px;">
+        <div class="card-inner p-4 p-md-5">
+          {% if block('page_title') is defined %}
+            <h1 class="title mb-4">{% block page_title %}{% endblock %}</h1>
+          {% endif %}
+
+          {% block page_content %}{% endblock %}
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
