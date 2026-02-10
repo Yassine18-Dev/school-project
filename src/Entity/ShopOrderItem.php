@@ -25,6 +25,19 @@ class ShopOrderItem
 
     #[ORM\Column]
     private float $price; // prix unitaire au moment de l’achat
+    #[ORM\ManyToOne]
+private ?Size $size = null;
+
+public function getSize(): ?Size
+{
+    return $this->size;
+}
+
+public function setSize(?Size $size): self
+{
+    $this->size = $size;
+    return $this;
+}
 
     // ===== Getters / Setters =====
 

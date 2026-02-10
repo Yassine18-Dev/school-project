@@ -7,6 +7,8 @@ use Symfony\Component\Form\FormEvent;
 use Symfony\Component\Form\FormEvents;
 use App\Entity\ShopProduct;
 use App\Entity\Game;
+use App\Entity\Size;
+
 use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\Extension\Core\Type\ChoiceType;
@@ -37,6 +39,13 @@ class ShopProductType extends AbstractType
                 'required' => false,
                 'placeholder' => 'Aucun (Merch)',
             ])
+            ->add('sizes', EntityType::class, [
+    'class' => Size::class,
+    'choice_label' => 'name',
+    'multiple' => true,
+    'expanded' => true,
+    'required' => false,
+])
             ->add('image', FileType::class, [   // ✅ image principale
         'label' => 'Image principale du produit',
         'mapped' => false,

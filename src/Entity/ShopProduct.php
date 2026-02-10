@@ -106,10 +106,7 @@ public function setImage(?string $image): self
     #[ORM\OneToMany(mappedBy: "product", targetEntity: ShopProductImage::class, cascade: ["persist", "remove"])]
 private Collection $images;
 
-public function __construct()
-{
-    $this->images = new ArrayCollection();
-}
+
 
 public function getImages(): Collection
 {
@@ -132,6 +129,34 @@ public function removeImage(ShopProductImage $image): self
             $image->setProduct(null);
         }
     }
+    return $this;
+}
+#[ORM\ManyToMany(targetEntity: Size::class)]
+private Collection $sizes;
+
+public function __construct()
+{
+    $this->images = new ArrayCollection();
+    $this->sizes = new ArrayCollection();
+
+}
+
+public function getSizes(): Collection
+{
+    return $this->sizes;
+}
+
+public function addSize(Size $size): static
+{
+    if (!$this->sizes->contains($size)) {
+        $this->sizes->add($size);
+    }
+    return $this;
+}
+
+public function removeSize(Size $size): static
+{
+    $this->sizes->removeElement($size);
     return $this;
 }
 }

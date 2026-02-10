@@ -5,16 +5,17 @@ namespace App\Controller;
 use App\Entity\ShopOrder;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
-use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
-use Stripe\Stripe;
-use Stripe\PaymentIntent;
+use Symfony\Component\HttpFoundation\JsonResponse;
 
 class PaymentController extends AbstractController
 {
+    /**
+     * Cette méthode remplace la création d'intention Stripe par une validation simple.
+     */
     #[Route('/payment/create/{orderId}', name: 'payment_create', methods: ['POST'])]
-    public function createPayment(int $orderId, EntityManagerInterface $em): Response
+    public function createPayment(int $orderId, EntityManagerInterface $em): JsonResponse
     {
         $order = $em->getRepository(ShopOrder::class)->find($orderId);
 
@@ -27,18 +28,11 @@ class PaymentController extends AbstractController
             return $this->json(['error' => 'Accès refusé'], 403);
         }
 
-        Stripe::setApiKey($_ENV['STRIPE_SECRET_KEY']);
-
-        $intent = PaymentIntent::create([
-            'amount' => (int) ($order->getTotal() * 100),
-            'currency' => 'eur',
-            'metadata' => [
-                'order_id' => $order->getId(),
-            ],
-        ]);
-
+        // ✅ Plus de Stripe ici ! On simule que tout est prêt.
         return $this->json([
-            'client_secret' => $intent->client_secret,
+            'success' => true,
+            'message' => 'Prêt pour le paiement simulé',
+            'orderId' => $order->getId()
         ]);
     }
 
@@ -48,20 +42,21 @@ class PaymentController extends AbstractController
         $order = $em->getRepository(ShopOrder::class)->find($orderId);
 
         if (!$order) {
-            throw $this->createNotFoundException();
+            throw $this->createNotFoundException('Commande introuvable');
         }
 
-        // 🔐 sécurité
+        // 🔐 Sécurité
         if ($order->getUser() !== $this->getUser()) {
             throw $this->createAccessDeniedException();
         }
 
-        // ✅ Paiement simulé réussi
+        // ✅ Paiement simulé réussi : On passe le statut à PAID
         if ($order->getStatus() !== 'PAID') {
             $order->setStatus('PAID');
             $em->flush();
         }
 
+        // On redirige vers une vue de succès (assure-toi que le template existe)
         return $this->render('payment/success.html.twig', [
             'order' => $order,
             'redirect_after' => '/shop/merch'

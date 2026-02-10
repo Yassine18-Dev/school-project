@@ -1,75 +1,74 @@
-{% extends 'front/base_front.html.twig' %}
+    {% extends 'front/base_front.html.twig' %}
 
-{% block title %}Mon Panier{% endblock %}
+    {% block title %}Mon Panier{% endblock %}
 
-{% block body %}
-<div class="cart-page">
-    <h1>🛒 Mon Panier</h1>
+    {% block body %}
+    <div class="cart-page">
+        <h1>🛒 Mon Panier</h1>
 
-    {% if cart is empty %}
-        <p style="text-align:center;color:#9ca3af;">Votre panier est vide.</p>
-    {% else %}
-        <table>
-            <thead>
-                <tr>
-                    <th>Produit</th>
-                    <th>Quantité</th>
-                    <th>Prix</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for product in products %}
+        {% if cart is empty %}
+            <p style="text-align:center;color:#9ca3af;">Votre panier est vide.</p>
+        {% else %}
+            <table>
+                <thead>
                     <tr>
-                        <td>{{ product.name }}</td>
-                        <td>{{ cart[product.id] }}</td>
-                        <td>{{ (product.price * cart[product.id])|number_format(2) }} €</td>
+                        <th>Produit</th>
+                        <th>Quantité</th>
+                        <th>Prix</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody>
+                    {% for product in products %}
+                        <tr>
+                            <td>{{ product.name }}</td>
+                            <td>{{ cart[product.id] }}</td>
+                            <td>{{ (product.price * cart[product.id])|number_format(2) }} €</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
 
-        <div class="cart-total">
-            Total : {{ products|reduce((carry, p) => carry + (p.price * cart[p.id]), 0)|number_format(2) }} €
-        </div>
-
-        <!-- Bouton ouvrir modal -->
-        <button id="open-payment-modal">💳 Passer commande</button>
-
-        <!-- Token CSRF pour le POST Symfony -->
-        <input type="hidden" id="csrf_token" value="{{ csrf_token('cart_checkout') }}">
-    {% endif %}
-</div>
-
-<!-- Modal Paiement -->
-<div id="payment-modal" class="payment-modal" style="display:none;">
-    <div class="payment-box">
-        <h2>💳 Paiement sécurisé</h2>
-        <p class="payment-sub">Simulation de paiement </p>
-
-        <label>Nom sur la carte</label>
-        <input type="text" placeholder="MOATEZ BEN SALEM">
-
-        <label>Numéro de carte</label>
-        <input type="text" placeholder="4242 4242 4242 4242">
-
-        <div class="payment-row">
-            <div>
-                <label>Expiration</label>
-                <input type="text" placeholder="MM/AA">
+            <div class="cart-total">
+                Total : {{ products|reduce((carry, p) => carry + (p.price * cart[p.id]), 0)|number_format(2) }} €
             </div>
-            <div>
-                <label>CVC</label>
-                <input type="text" placeholder="123">
-            </div>
-        </div>
 
-        <button id="pay-btn">Payer</button>
-        <button class="close-btn" id="close-payment">Annuler</button>
+            <!-- Bouton ouvrir modal -->
+            <button id="open-payment-modal">💳 Passer commande</button>
+            <input type="hidden" id="csrf_token" value="{{ csrf_token('cart_checkout') }}">
+        {% endif %}
     </div>
-</div>
-{% endblock %}
 
-{% block javascripts %}
-  {{ parent() }}
+    <!-- Modal Paiement -->
+    <div id="payment-modal" class="payment-modal" style="display:none;">
+        <div class="payment-box">
+            <h2>💳 Paiement sécurisé</h2>
+            <p class="payment-sub">Simulation de paiement </p>
 
-{% endblock %}
+            <label>Nom sur la carte</label>
+            <input type="text" placeholder="MOATEZ BEN SALEM">
+
+            <label>Numéro de carte</label>
+            <input type="text" placeholder="4242 4242 4242 4242">
+
+            <div class="payment-row">
+                <div>
+                    <label>Expiration</label>
+                    <input type="text" placeholder="MM/AA">
+                </div>
+                <div>
+                    <label>CVC</label>
+                    <input type="text" placeholder="123">
+                </div>
+            </div>
+
+            <button id="pay-btn">Payer</button>
+            <button class="close-btn" id="close-payment">Annuler</button>
+        </div>
+    </div>
+    {% endblock %}
+
+    {% block javascripts %}
+        {{ parent() }}
+        <script src="{{ asset('js/payment.js') }}"></script>
+
+    {% endblock %}

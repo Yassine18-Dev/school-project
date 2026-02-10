@@ -22,7 +22,7 @@
        "
        onmouseover="this.style.background='#5b21b6';"
        onmouseout="this.style.background='{{ type == 'skin' ? '#5b21b6' : '#7c3aed' }}';">
-        🎮 Skins
+        🎮 Skins / Points
     </a>
 
     {# Bouton Merchs (bleu esports) #}
@@ -136,6 +136,16 @@
     <a href="{{ path('app_shop_product_show', {'id': product.id}) }}" style="text-decoration:none; color:white;">
         <h3 style="font-size: 1.1rem; margin: 10px 0;">{{ product.name }}</h3>
         <p style="color: #facc15; font-weight: bold; margin: 5px 0;">{{ product.price }} €</p>
+        {% if product.type == 'merch' %}
+    <div class="sizes">
+        <strong>Tailles :</strong>
+        {% for size in product.sizes %}
+            <span class="badge bg-secondary">{{ size.name }}</span>
+        {% else %}
+            <span class="text-muted">Aucune taille</span>
+        {% endfor %}
+    </div>
+{% endif %}
     </a>
 
     {# BOUTON PANIER #}

@@ -54,61 +54,58 @@ class CartController extends AbstractController
     }
 
     // Créer la commande et simuler le paiement
-  #[Route('/cart/checkout', name: 'app_order_checkout', methods: ['POST'])]
-public function checkout(
-    SessionInterface $session,
-    EntityManagerInterface $em
-): JsonResponse {
-    $user = $this->getUser();
-    if (!$user) {
-        return $this->json(['error' => 'Vous devez être connecté'], 403);
+    #[Route('/cart/checkout', name: 'app_order_checkout', methods: ['POST'])]
+public function checkout(SessionInterface $session, EntityManagerInterface $em): JsonResponse 
+{
+    try {
+        $user = $this->getUser();
+        if (!$user) {
+            return $this->json(['success' => false, 'error' => 'Vous devez être connecté'], 403);
+        }
+
+        $cart = $session->get('cart', []);
+        if (empty($cart)) {
+            return $this->json(['success' => false, 'error' => 'Votre panier est vide'], 400);
+        }
+
+        // Création de la commande
+        $order = new ShopOrder();
+        $order->setUser($user);
+        $order->setStatus('PAID');
+        $order->setTotal(0); 
+        
+        $em->persist($order);
+
+        $total = 0;
+        foreach ($cart as $productId => $quantity) {
+            $product = $em->getRepository(ShopProduct::class)->find($productId);
+            if (!$product) continue;
+
+            $orderItem = new ShopOrderItem();
+            $orderItem->setOrder($order);
+            $orderItem->setProduct($product);
+            $orderItem->setQuantity($quantity);
+            $orderItem->setPrice($product->getPrice());
+
+            $em->persist($orderItem);
+            $total += $product->getPrice() * $quantity;
+        }
+
+        $order->setTotal($total);
+        $em->flush();
+
+        // Vider panier
+        $session->remove('cart');
+
+        return $this->json([
+            'success' => true,
+            'orderId' => $order->getId()
+        ]);
+
+    } catch (\Exception $e) {
+        // Cela te dira exactement quelle colonne manque en base de données dans la console F12
+        return $this->json(['success' => false, 'error' => $e->getMessage()], 500);
     }
-
-    $cart = $session->get('cart', []);
-    if (empty($cart)) {
-        return $this->json(['error' => 'Votre panier est vide'], 400);
-    }
-
-    // 1️⃣ Création commande
-    $order = new ShopOrder();
-    $order->setUser($user);
-    $order->setStatus('PENDING');
-    
-    $em->persist($order); // ⚠️ IMPORTANT AVANT LES ITEMS
-
-    $total = 0;
-
-    foreach ($cart as $productId => $quantity) {
-        $product = $em->getRepository(ShopProduct::class)->find($productId);
-        if (!$product) continue;
-
-        $orderItem = new ShopOrderItem();
-        $orderItem->setOrder($order);
-        $orderItem->setProduct($product);
-        $orderItem->setQuantity($quantity);
-        $orderItem->setPrice($product->getPrice());
-
-        $em->persist($orderItem);
-
-        $total += $product->getPrice() * $quantity;
-    }
-
-    $order->setTotal($total);
-
-    // 2️⃣ SIMULATION paiement réussi
-    $order->setStatus('PAID');
-
-    $em->flush();
-
-    // 3️⃣ Vider panier
-    $session->remove('cart');
-
-    return $this->json([
-        'success' => true,
-        'orderId' => $order->getId(),
-        'status' => $order->getStatus(),
-        'total' => $total
-    ]);
 }
     #[Route('/cart/json', name: 'cart_json')]
 public function cartJson(SessionInterface $session, EntityManagerInterface $em): JsonResponse
