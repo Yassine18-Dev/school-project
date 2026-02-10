@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Support | ArenaMind{% endblock %}
+
+{% block body %}
+
+<h1>How can we help?</h1>
+<p class="subtitle">
+    Explore esports support topics or contact our team.
+</p>
+
+<!-- ================= CATEGORY CARDS ================= -->
+
+<div class="card-grid">
+
+    <div class="card" onclick="window.location.href='?category=1#contact-form'">
+        <h3>🏆 Tournament Issues</h3>
+        <p>Bracket errors, match disputes, scheduling problems.</p>
+    </div>
+
+    <div class="card" onclick="window.location.href='?category=2#contact-form'">
+        <h3>👤 Account Problems</h3>
+        <p>Login errors, banned accounts, profile issues.</p>
+    </div>
+
+    <div class="card" onclick="window.location.href='?category=3#contact-form'">
+        <h3>💳 Payments & Refunds</h3>
+        <p>Prize payouts, subscription payments, refunds.</p>
+    </div>
+
+    <div class="card" onclick="window.location.href='?category=4#contact-form'">
+        <h3>🐛 Platform Bugs</h3>
+        <p>Website crashes, leaderboard bugs, lag issues.</p>
+    </div>
+
+    <div class="card" onclick="window.location.href='?category=5#contact-form'">
+        <h3>🎮 Team Registration</h3>
+        <p>Roster management, player eligibility issues.</p>
+    </div>
+
+    <div class="card" onclick="window.location.href='?category=6#contact-form'">
+        <h3>🤝 Partnerships</h3>
+        <p>Sponsorship, collaborations, esports events.</p>
+    </div>
+
+</div>
+
+<!-- ================= CONTACT FORM ================= -->
+
+<div class="support-section" id="contact-form">
+
+    <div class="support-form-wrapper">
+
+        <h2 style="margin-bottom:20px;">Contact Support</h2>
+
+        {{ form_start(form) }}
+
+        <label>Category</label>
+        {{ form_widget(form.category) }}
+
+        <label>Subject</label>
+        {{ form_widget(form.subject) }}
+
+        <label>Message</label>
+        {{ form_widget(form.message) }}
+
+        <button type="submit" class="btn-primary">
+            Send Message
+        </button>
+
+        {{ form_end(form) }}
+
+    </div>
+
+</div>
+
+{% endblock %}

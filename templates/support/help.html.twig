@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block container_class %}wide{% endblock %}
+
+{% block body %}
+
+<div class="ai-wrapper">
+
+    <div class="ai-header">
+        <h2>AI Answers</h2>
+        <button class="ai-end-btn">End</button>
+    </div>
+
+    <div class="ai-chat-container">
+
+        <!-- User bubble -->
+        <div class="ai-message user">
+            How can I report a problem?
+        </div>
+
+        <!-- AI response card -->
+        <div class="ai-message assistant">
+            <div class="assistant-card">
+                <p>
+                    To report a problem, just drop us an email at 
+                    <a href="#">help@yourplatform.com</a> with as many details as possible.
+                </p>
+
+                <p>
+                    This helps us pinpoint the issue and get it solved quickly.
+                </p>
+
+                <div class="sources">
+                    <strong>Sources</strong>
+                    <a href="#">Security - ArenaMind</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="ai-cta">
+            <button>I still need help</button>
+        </div>
+
+    </div>
+
+    <div class="ai-input-bar">
+        <input type="text" placeholder="Ask a question..." />
+    </div>
+
+</div>
+
+<div class="ai-floating-btn">
+    💬
+</div>
+
+{% endblock %}
