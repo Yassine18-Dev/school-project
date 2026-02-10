@@ -1,0 +1,62 @@
+{% extends 'front/base_front.html.twig' %}
+
+{% block title %}Prédictions - ArenaMind{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="text-center mb-5">
+        <h1 class="fw-bold mb-3">Prédictions de l'IA</h1>
+        <p class="text-secondary lead">Découvrez qui l'algorithme voit gagner.</p>
+    </div>
+
+    <div class="row g-4">
+        {% for prediction in predictions %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card bg-card border-0 h-100 shadow-sm p-3 rounded-4 position-relative overflow-hidden">
+                    <!-- Top Info -->
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <span class="badge bg-dark border border-secondary border-opacity-25">{{ prediction.tournoi.nom }}</span>
+                        <span class="text-muted small">{{ prediction.tournoi.jeu.nom }}</span>
+                    </div>
+
+                    <!-- Teams Matchup -->
+                    <div class="d-flex justify-content-between align-items-center py-3">
+                        <div class="text-center">
+                            <h4 class="fw-bold mb-0 {{ prediction.predictedWinner == prediction.teamA ? 'text-success' : '' }}">{{ prediction.teamA }}</h4>
+                        </div>
+                        <div class="small fw-bold text-muted">VS</div>
+                        <div class="text-center">
+                            <h4 class="fw-bold mb-0 {{ prediction.predictedWinner == prediction.teamB ? 'text-success' : '' }}">{{ prediction.teamB }}</h4>
+                        </div>
+                    </div>
+
+                    <!-- Analysis Box -->
+                    <div class="bg-dark bg-opacity-50 p-3 rounded-3 mb-3 border border-secondary border-opacity-10">
+                        <div class="d-flex justify-content-between mb-2 small">
+                            <span class="text-muted">Confiance IA</span>
+                            <span class="text-white fw-bold">{{ (prediction.winProbability * 100)|round }}%</span>
+                        </div>
+                        <div class="progress" style="height: 6px;">
+                            <div class="progress-bar bg-success" style="width: {{ prediction.winProbability * 100 }}%"></div>
+                        </div>
+                        <p class="small text-secondary mt-3 mb-0 fst-italic line-clamp-2">
+                            "{{ prediction.aiAnalysis|default('Analyse en cours...') }}"
+                        </p>
+                    </div>
+
+                    <!-- Footer -->
+                    <div class="mt-auto text-center">
+                        <span class="badge bg-success bg-opacity-20 text-success border border-success border-opacity-20 px-3 py-2 rounded-pill w-100">
+                             Vainqueur : {{ prediction.predictedWinner }}
+                        </span>
+                    </div>
+                </div>
+            </div>
+        {% else %}
+            <div class="col-12 text-center py-5">
+                <p class="text-muted">Aucune prédiction disponible.</p>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endblock %}

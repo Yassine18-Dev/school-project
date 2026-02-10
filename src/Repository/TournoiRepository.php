@@ -16,28 +16,30 @@ class TournoiRepository extends ServiceEntityRepository
         parent::__construct($registry, Tournoi::class);
     }
 
-    //    /**
-    //     * @return Tournoi[] Returns an array of Tournoi objects
-    //     */
-    //    public function findByExampleField($value): array
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->orderBy('t.id', 'ASC')
-    //            ->setMaxResults(10)
-    //            ->getQuery()
-    //            ->getResult()
-    //        ;
-    //    }
+    /**
+     * Recherche, filtre par jeu, et trie les tournois.
+     */
+    public function searchAndFilter(?string $search = null, ?int $jeuId = null, string $sort = 'ASC'): array
+    {
+        $qb = $this->createQueryBuilder('t')
+            ->leftJoin('t.jeu', 'j')
+            ->addSelect('j');
 
-    //    public function findOneBySomeField($value): ?Tournoi
-    //    {
-    //        return $this->createQueryBuilder('t')
-    //            ->andWhere('t.exampleField = :val')
-    //            ->setParameter('val', $value)
-    //            ->getQuery()
-    //            ->getOneOrNullResult()
-    //        ;
-    //    }
+        // Recherche par nom
+        if ($search) {
+            $qb->andWhere('t.nom LIKE :search')
+               ->setParameter('search', '%' . $search . '%');
+        }
+
+        // Filtre par jeu
+        if ($jeuId) {
+            $qb->andWhere('j.id = :jeuId')
+               ->setParameter('jeuId', $jeuId);
+        }
+
+        // Tri par date
+        $qb->orderBy('t.dateDebut', $sort === 'DESC' ? 'DESC' : 'ASC');
+
+        return $qb->getQuery()->getResult();
+    }
 }

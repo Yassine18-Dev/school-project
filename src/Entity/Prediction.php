@@ -3,7 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\PredictionRepository;
-use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Validator\Constraints as Assert;
 
@@ -17,77 +16,58 @@ class Prediction
 
     #[ORM\ManyToOne(targetEntity: Tournoi::class)]
     #[ORM\JoinColumn(nullable: false)]
-    #[Assert\NotBlank(message: "La prédiction doit être liée à un tournoi.")]
     private ?Tournoi $tournoi = null;
 
     #[ORM\Column(length: 255)]
-    #[Assert\NotBlank(message: "Le nom du vainqueur prédit ne peut pas être vide.")]
-    private ?string $vainqueurPredi = null;
+    #[Assert\NotBlank(message: "Le nom de l'équipe A est obligatoire.")]
+    private ?string $teamA = null;
 
-    #[ORM\Column]
-    #[Assert\NotNull]
-    #[Assert\Range(min: 0, max: 1, notInRangeMessage: "La confiance doit être entre 0 et 1.")]
-    private ?float $confianceAI = null;
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le nom de l'équipe B est obligatoire.")]
+    private ?string $teamB = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
-    private ?\DateTimeInterface $createdAt = null;
+    #[ORM\Column(nullable: true)]
+    #[Assert\PositiveOrZero]
+    private ?int $scoreTeamA = null;
 
-    public function __construct()
-    {
-        // Initialise la date automatiquement à la création
-        $this->createdAt = new \DateTime();
-    }
+    #[ORM\Column(nullable: true)]
+    #[Assert\PositiveOrZero]
+    private ?int $scoreTeamB = null;
 
-    public function getId(): ?int
-    {
-        return $this->id;
-    }
+    #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "Le vainqueur prédit est obligatoire.")]
+    private ?string $predictedWinner = null;
 
-    public function getTournoi(): ?Tournoi
-    {
-        return $this->tournoi;
-    }
+    #[ORM\Column(type: "float")]
+    #[Assert\Range(min: 0, max: 1)]
+    private ?float $winProbability = 0.5;
 
-    public function setTournoi(?Tournoi $tournoi): static
-    {
-        $this->tournoi = $tournoi;
+    #[ORM\Column(type: "text", nullable: true)]
+    private ?string $aiAnalysis = null;
 
-        return $this;
-    }
+    public function getId(): ?int { return $this->id; }
 
-    public function getVainqueurPredi(): ?string
-    {
-        return $this->vainqueurPredi;
-    }
+    public function getTournoi(): ?Tournoi { return $this->tournoi; }
+    public function setTournoi(?Tournoi $tournoi): self { $this->tournoi = $tournoi; return $this; }
 
-    public function setVainqueurPredi(string $vainqueurPredi): static
-    {
-        $this->vainqueurPredi = $vainqueurPredi;
+    public function getTeamA(): ?string { return $this->teamA; }
+    public function setTeamA(string $teamA): self { $this->teamA = $teamA; return $this; }
 
-        return $this;
-    }
+    public function getTeamB(): ?string { return $this->teamB; }
+    public function setTeamB(string $teamB): self { $this->teamB = $teamB; return $this; }
 
-    public function getConfianceAI(): ?float
-    {
-        return $this->confianceAI;
-    }
+    public function getScoreTeamA(): ?int { return $this->scoreTeamA; }
+    public function setScoreTeamA(?int $scoreTeamA): self { $this->scoreTeamA = $scoreTeamA; return $this; }
 
-    public function setConfianceAI(float $confianceAI): static
-    {
-        $this->confianceAI = $confianceAI;
+    public function getScoreTeamB(): ?int { return $this->scoreTeamB; }
+    public function setScoreTeamB(?int $scoreTeamB): self { $this->scoreTeamB = $scoreTeamB; return $this; }
 
-        return $this;
-    }
+    public function getPredictedWinner(): ?string { return $this->predictedWinner; }
+    public function setPredictedWinner(string $predictedWinner): self { $this->predictedWinner = $predictedWinner; return $this; }
 
-    public function getCreatedAt(): ?\DateTimeInterface
-    {
-        return $this->createdAt;
-    }
+    public function getWinProbability(): ?float { return $this->winProbability; }
+    public function setWinProbability(float $winProbability): self { $this->winProbability = $winProbability; return $this; }
 
-    public function setCreatedAt(\DateTimeInterface $createdAt): static
-    {
-        $this->createdAt = $createdAt;
-
-        return $this;
-    }
+    public function getAiAnalysis(): ?string { return $this->aiAnalysis; }
+    public function setAiAnalysis(?string $aiAnalysis): self { $this->aiAnalysis = $aiAnalysis; return $this; }
 }

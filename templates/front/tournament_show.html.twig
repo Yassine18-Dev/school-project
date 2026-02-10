@@ -1,0 +1,76 @@
+{% extends 'front/base_front.html.twig' %}
+
+{% block title %}{{ tournoi.nom }} - ArenaMind{% endblock %}
+
+{% block body %}
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <div class="card bg-card border-0 shadow-lg overflow-hidden">
+                <div class="card-header bg-dark border-bottom border-secondary p-4 d-flex justify-content-between align-items-center">
+                    <a href="{{ path('app_front_tournaments') }}" class="btn btn-outline-light btn-sm rounded-pill">
+                        <i class="fa-solid fa-arrow-left me-2"></i> Retour
+                    </a>
+                    <span class="badge bg-purple bg-opacity-10 text-purple border border-purple border-opacity-25">Tournament ID #{{ tournoi.id }}</span>
+                </div>
+                
+                <div class="card-body p-5">
+                    <div class="text-center mb-5">
+                        <div class="badge bg-primary bg-opacity-10 text-primary mb-3 px-3 py-2 rounded-pill">
+                            <i class="fa-solid fa-gamepad me-2"></i> {{ tournoi.jeu.nom }}
+                        </div>
+                        <h1 class="display-4 fw-bold mb-2">{{ tournoi.nom }}</h1>
+                        <p class="lead text-muted">{{ tournoi.dateDebut|date('d F Y à H:i') }}</p>
+                    </div>
+
+                    <div class="row g-4 mb-5">
+                        <div class="col-md-6">
+                            <div class="p-4 rounded-3 bg-dark border border-secondary border-opacity-25 h-100">
+                                <h5 class="text-white mb-3"><i class="fa-solid fa-trophy text-warning me-2"></i> Détails</h5>
+                                <ul class="list-unstyled text-muted mb-0">
+                                    <li class="mb-2"><span class="fw-bold text-light">Format:</span> 5v5</li>
+                                    <li class="mb-2"><span class="fw-bold text-light">Mode:</span> Élimination directe</li>
+                                    <li><span class="fw-bold text-light">Statut:</span> Ouvert</li>
+                                </ul>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="p-4 rounded-3 bg-dark border border-secondary border-opacity-25 h-100">
+                                <h5 class="text-white mb-3"><i class="fa-solid fa-users text-info me-2"></i> Participants</h5>
+                                <div class="d-flex align-items-center">
+                                    <div class="progress flex-grow-1 me-3" style="height: 10px;">
+                                        <div class="progress-bar bg-success" role="progressbar" style="width: 25%" aria-valuenow="25" aria-valuemin="0" aria-valuemax="100"></div>
+                                    </div>
+                                    <span class="text-light">8/32</span>
+                                </div>
+                                <p class="small text-muted mt-2 mb-0">Les inscriptions se terminent bientôt.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="text-center">
+                        {% if tournoi.dateDebut > date() %}
+                            <a href="{{ path('app_front_tournament_join', {'id': tournoi.id}) }}" class="btn btn-primary btn-lg px-5 rounded-pill shadow-lg hover-scale">
+                                S'inscrire Maintenant <i class="fa-solid fa-paper-plane ms-2"></i>
+                            </a>
+                        {% else %}
+                            <button class="btn btn-secondary btn-lg px-5 rounded-pill" disabled>
+                                Inscriptions Closes <i class="fa-solid fa-lock ms-2"></i>
+                            </button>
+                            <p class="text-danger mt-3 mb-0"><i class="fa-solid fa-triangle-exclamation me-2"></i> Ce tournoi a déjà commencé.</p>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .text-purple { color: #8833ff; }
+    .bg-purple { background-color: #8833ff; }
+    .bg-card { background-color: #1a1a2e; } /* Assouplir avec la couleur du thème */
+    .hover-scale { transition: transform 0.2s; }
+    .hover-scale:hover { transform: scale(1.05); }
+</style>
+{% endblock %}

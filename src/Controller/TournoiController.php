@@ -5,6 +5,7 @@ namespace App\Controller;
 use App\Entity\Tournoi;
 use App\Form\TournoiType;
 use App\Repository\TournoiRepository;
+use App\Repository\JeuRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
@@ -14,20 +15,24 @@ use Symfony\Component\Routing\Annotation\Route;
 #[Route('/tournoi')]
 class TournoiController extends AbstractController
 {
-    /**
-     * Affiche la liste de tous les tournois
-     */
     #[Route('/', name: 'app_tournoi_index', methods: ['GET'])]
-    public function index(TournoiRepository $tournoiRepository): Response
+    public function index(Request $request, TournoiRepository $tournoiRepository, JeuRepository $jeuRepository): Response
     {
+        $search = $request->query->get('q', '');
+        $jeuId = $request->query->getInt('jeu', 0) ?: null;
+        $sort = $request->query->get('sort', 'ASC');
+
+        $tournois = $tournoiRepository->searchAndFilter($search, $jeuId, $sort);
+
         return $this->render('tournoi/index.html.twig', [
-            'tournois' => $tournoiRepository->findAll(),
+            'tournois' => $tournois,
+            'jeux' => $jeuRepository->findAll(),
+            'search' => $search,
+            'selectedJeu' => $jeuId,
+            'sort' => $sort,
         ]);
     }
 
-    /**
-     * Formulaire pour créer un nouveau tournoi
-     */
     #[Route('/new', name: 'app_tournoi_new', methods: ['GET', 'POST'])]
     public function new(Request $request, EntityManagerInterface $entityManager): Response
     {
@@ -39,8 +44,7 @@ class TournoiController extends AbstractController
             $entityManager->persist($tournoi);
             $entityManager->flush();
 
-            $this->addFlash('success', 'Tournoi créé avec succès !');
-            return $this->redirectToRoute('app_tournoi_index');
+            return $this->redirectToRoute('app_tournoi_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('tournoi/new.html.twig', [
@@ -49,9 +53,6 @@ class TournoiController extends AbstractController
         ]);
     }
 
-    /**
-     * Affiche les détails d'un tournoi spécifique
-     */
     #[Route('/{id}', name: 'app_tournoi_show', methods: ['GET'])]
     public function show(Tournoi $tournoi): Response
     {
@@ -60,9 +61,6 @@ class TournoiController extends AbstractController
         ]);
     }
 
-    /**
-     * Formulaire pour modifier un tournoi existant
-     */
     #[Route('/{id}/edit', name: 'app_tournoi_edit', methods: ['GET', 'POST'])]
     public function edit(Request $request, Tournoi $tournoi, EntityManagerInterface $entityManager): Response
     {
@@ -71,8 +69,8 @@ class TournoiController extends AbstractController
 
         if ($form->isSubmitted() && $form->isValid()) {
             $entityManager->flush();
-            $this->addFlash('success', 'Tournoi mis à jour !');
-            return $this->redirectToRoute('app_tournoi_index');
+
+            return $this->redirectToRoute('app_tournoi_index', [], Response::HTTP_SEE_OTHER);
         }
 
         return $this->render('tournoi/edit.html.twig', [
@@ -81,18 +79,14 @@ class TournoiController extends AbstractController
         ]);
     }
 
-    /**
-     * Supprime un tournoi
-     */
     #[Route('/{id}', name: 'app_tournoi_delete', methods: ['POST'])]
     public function delete(Request $request, Tournoi $tournoi, EntityManagerInterface $entityManager): Response
     {
         if ($this->isCsrfTokenValid('delete'.$tournoi->getId(), $request->request->get('_token'))) {
             $entityManager->remove($tournoi);
             $entityManager->flush();
-            $this->addFlash('success', 'Tournoi supprimé.');
         }
 
-        return $this->redirectToRoute('app_tournoi_index');
+        return $this->redirectToRoute('app_tournoi_index', [], Response::HTTP_SEE_OTHER);
     }
 }

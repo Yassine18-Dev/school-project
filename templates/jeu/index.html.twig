@@ -1,67 +1,71 @@
-{% extends 'admin/base_admin.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Gestion des Jeux • ArenaMind{% endblock %}
+{% block title %}Bibliothèque des Jeux - ArenaMind{% endblock %}
 
 {% block body %}
-    {# AFFICHAGE DES MESSAGES DE SUCCÈS #}
-    {% for msg in app.flashes('success') %}
-        <div style="background: rgba(22, 163, 74, 0.2); border: 1px solid var(--success); color: var(--success); padding: 15px; border-radius: 10px; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
-            <span>✅</span> {{ msg }}
-        </div>
-    {% endfor %}
-
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 style="display: flex; align-items: center; gap: 10px;">
-                <span style="font-size: 24px;">🎮</span> Gestion des Jeux
-            </h1>
-            <p class="subtitle">Liste complète des jeux disponibles sur la plateforme.</p>
+            <h1 class="text-white fw-bold">🎮 Bibliothèque des Jeux</h1>
+            <p class="text-muted small">Gérez votre collection de jeux pour les tournois.</p>
         </div>
-        <a href="{{ path('app_jeu_new') }}" class="btn">✨ Create new</a>
+        <a href="{{ path('app_jeu_new') }}" class="btn btn-primary rounded-pill px-4 fw-bold" style="background-color: var(--accent-purple); border: none;">
+            <i class="fa-solid fa-plus me-2"></i> Ajouter un jeu
+        </a>
     </div>
 
-    <table>
-        <thead>
-            <tr>
-                <th style="width: 80px;">ID</th>
-                <th>Jeu</th>
-                <th>Description</th>
-                <th style="text-align: right;">Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-        {% for jeu in jeus %}
-            <tr>
-                <td><span class="badge">#{{ jeu.id }}</span></td>
-                <td>
-                    <div style="display: flex; align-items: center; gap: 15px;">
-                        {# AFFICHAGE DE LA MINIATURE #}
-                        <img src="{{ jeu.image }}" alt="{{ jeu.nom }}" 
-                             style="width: 50px; height: 50px; border-radius: 8px; object-fit: cover; border: 1px solid var(--border); background: #111;">
-                        
-                        <div style="display: flex; flex-direction: column;">
-                            <span style="font-weight: bold; color: var(--text);">{{ jeu.nom }}</span>
-                        </div>
-                    </div>
-                </td>
-                <td style="color: var(--muted); font-size: 14px;">
-                    {{ jeu.description|length > 60 ? jeu.description|slice(0, 60) ~ '...' : jeu.description }}
-                </td>
-                <td style="text-align: right;">
-                    <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                        <a href="{{ path('app_jeu_show', {'id': jeu.id}) }}" class="btn-secondary" style="padding: 6px 12px; font-size: 12px; text-decoration: none; border-radius: 6px;">Détails</a>
-                        <a href="{{ path('app_jeu_edit', {'id': jeu.id}) }}" class="btn" style="padding: 6px 12px; font-size: 12px; text-decoration: none; border-radius: 6px; background: var(--blue);">Modifier</a>
-                    </div>
-                </td>
-            </tr>
-        {% else %}
-            <tr>
-                <td colspan="4" style="text-align: center; padding: 40px; color: var(--muted);">
-                    <div style="font-size: 40px; margin-bottom: 10px;">📂</div>
-                    Aucun jeu n'a été trouvé dans la base de données.
-                </td>
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
+    <div class="card border-0 shadow-lg overflow-hidden" style="background-color: #1a1d26; border-radius: 15px;">
+        <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle mb-0">
+                <thead style="background-color: rgba(136, 51, 255, 0.1);">
+                    <tr class="text-uppercase small text-muted">
+                        <th class="py-3 ps-4">Jeu</th>
+                        <th class="py-3">Description</th>
+                        <th class="py-3 text-center">ID</th>
+                        <th class="py-3 text-end pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for jeu in jeus %}
+                    <tr>
+                        <td class="ps-4">
+                            <div class="d-flex align-items-center">
+                                <div class="rounded-3 overflow-hidden me-3" style="width: 50px; height: 50px; border: 1px solid rgba(255,255,255,0.1);">
+                                    <img src="{{ jeu.image }}" 
+                                         alt="{{ jeu.nom }}" 
+                                         class="w-100 h-100 object-fit-cover"
+                                         onerror="this.src='https://placehold.co/50x50/1a1d26/white?text=🎮'">
+                                </div>
+                                <span class="fw-bold text-white">{{ jeu.nom }}</span>
+                            </div>
+                        </td>
+                        <td class="text-muted small">
+                            {{ jeu.description|length > 60 ? jeu.description|slice(0, 60) ~ '...' : jeu.description }}
+                        </td>
+                        <td class="text-center text-muted small">#{{ jeu.id }}</td>
+                        <td class="text-end pe-4">
+                            <div class="btn-group">
+                                <a href="{{ path('app_jeu_show', {'id': jeu.id}) }}" class="btn btn-sm btn-icon btn-outline-light border-0" title="Voir">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+                                <a href="{{ path('app_jeu_edit', {'id': jeu.id}) }}" class="btn btn-sm btn-icon btn-outline-light border-0" title="Modifier">
+                                    <i class="fa-solid fa-pen"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4" class="text-center py-5 text-muted">
+                            <div class="mb-3 display-4 opacity-50">🎮</div>
+                            <p>Aucun jeu disponible.</p>
+                            <a href="{{ path('app_jeu_new') }}" class="btn btn-outline-primary btn-sm rounded-pill mt-2">Ajouter un premier jeu</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 {% endblock %}

@@ -1,30 +1,85 @@
 {% extends 'base.html.twig' %}
 
-{% block title %}Prediction{% endblock %}
+{% block title %}Détails Prédiction - ArenaMind{% endblock %}
 
 {% block body %}
-    <h1>Prediction</h1>
+<div class="container py-5">
+    <div class="row justify-content-center">
+        <div class="col-lg-8">
+            <!-- Header Card -->
+            <div class="card border-0 shadow-lg mb-4" style="background-color: var(--bg-card); border-radius: 20px;">
+                <div class="card-body p-5 text-center position-relative overflow-hidden">
+                    <div class="position-absolute top-0 start-50 translate-middle-x text-uppercase small text-muted mt-3 fw-bold tracking-widest">
+                        {{ prediction.tournoi.nom }}
+                    </div>
+                    
+                    <div class="d-flex align-items-center justify-content-center gap-5 mt-4">
+                        <div class="text-center">
+                            <h2 class="fw-bold mb-0 {{ prediction.predictedWinner == prediction.teamA ? 'text-success' : 'text-white' }}">{{ prediction.teamA }}</h2>
+                            {% if prediction.scoreTeamA is not null %}
+                                <div class="display-4 fw-bold">{{ prediction.scoreTeamA }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="text-muted fw-light small text-uppercase">VS</div>
+                        
+                        <div class="text-center">
+                            <h2 class="fw-bold mb-0 {{ prediction.predictedWinner == prediction.teamB ? 'text-success' : 'text-white' }}">{{ prediction.teamB }}</h2>
+                            {% if prediction.scoreTeamB is not null %}
+                                <div class="display-4 fw-bold">{{ prediction.scoreTeamB }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
 
-    <table class="table">
-        <tbody>
-            <tr>
-                <th>Id</th>
-                <td>{{ prediction.id }}</td>
-            </tr>
-            <tr>
-                <th>ScorePredit</th>
-                <td>{{ prediction.scorePredit }}</td>
-            </tr>
-            <tr>
-                <th>DatePrediction</th>
-                <td>{{ prediction.datePrediction ? prediction.datePrediction|date('Y-m-d H:i:s') : '' }}</td>
-            </tr>
-        </tbody>
-    </table>
+                    <div class="mt-4">
+                        <span class="badge bg-success bg-opacity-10 text-success border border-success border-opacity-25 px-3 py-2 rounded-pill">
+                            <i class="fa-solid fa-trophy me-2"></i> Vainqueur Prédit : <strong>{{ prediction.predictedWinner }}</strong>
+                        </span>
+                    </div>
+                </div>
+            </div>
 
-    <a href="{{ path('app_prediction_index') }}">back to list</a>
+            <!-- Analysis & Confidence -->
+            <div class="row g-4">
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm h-100" style="background-color: var(--bg-card); border-radius: 15px;">
+                        <div class="card-body p-4">
+                            <h5 class="card-title text-white mb-3"><i class="fa-solid fa-chart-line me-2 text-primary"></i>Confiance de l'IA</h5>
+                            <div class="d-flex align-items-center justify-content-between mb-2">
+                                <span class="text-muted">Probabilité de victoire</span>
+                                <span class="fw-bold text-success">{{ (prediction.winProbability * 100)|number_format(0) }}%</span>
+                            </div>
+                            <div class="progress" style="height: 8px; background-color: rgba(255,255,255,0.05);">
+                                <div class="progress-bar bg-gradient-success" role="progressbar" style="width: {{ prediction.winProbability * 100 }}%"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-md-6">
+                    <div class="card border-0 shadow-sm h-100" style="background-color: var(--bg-card); border-radius: 15px;">
+                        <div class="card-body p-4">
+                            <h5 class="card-title text-white mb-3"><i class="fa-solid fa-robot me-2 text-info"></i>Analyse IA</h5>
+                            <p class="text-muted small mb-0">
+                                {{ prediction.aiAnalysis|default("L'IA n'a pas fourni d'analyse détaillée pour ce match.")|nl2br }}
+                            </p>
+                        </div>
+                    </div>
+                </div>
+            </div>
 
-    <a href="{{ path('app_prediction_edit', {'id': prediction.id}) }}">edit</a>
-
-    {{ include('prediction/_delete_form.html.twig') }}
+            <!-- Actions -->
+            <div class="d-flex justify-content-between align-items-center mt-5">
+                <a href="{{ path('app_prediction_index') }}" class="btn btn-link text-muted text-decoration-none">
+                    <i class="fa-solid fa-arrow-left me-2"></i> Retour à la liste
+                </a>
+                <div class="d-flex gap-2">
+                    <a href="{{ path('app_prediction_edit', {'id': prediction.id}) }}" class="btn btn-outline-warning">
+                        <i class="fa-solid fa-pen me-2"></i> Modifier
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock %}

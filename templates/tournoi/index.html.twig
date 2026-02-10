@@ -1,78 +1,135 @@
-{% extends 'admin/base_admin.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Gestion des Tournois • ArenaMind{% endblock %}
+{% block title %}Tournois - ArenaMind{% endblock %}
 
 {% block body %}
-    {# Affichage des messages flash pour confirmer les actions #}
-    {% for msg in app.flashes('success') %}
-        <div style="background: rgba(168, 85, 247, 0.2); border: 1px solid var(--purple); color: #e9d5ff; padding: 15px; border-radius: 12px; margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
-            <span>✅</span> {{ msg }}
-        </div>
-    {% endfor %}
-
-    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 30px;">
+<div class="container mt-5">
+    <div class="d-flex justify-content-between align-items-center mb-4">
         <div>
-            <h1 style="font-size: 2.5rem; margin-bottom: 5px;">🏆 Tournois</h1>
-            <p class="subtitle" style="color: var(--muted); margin: 0;">Planifiez vos prochains événements e-sport.</p>
+            <h1 class="text-white fw-bold">🏆 Gestion des Tournois</h1>
+            <p class="text-muted small">Organisez et suivez vos compétitions.</p>
         </div>
-        <a href="{{ path('app_tournoi_new') }}" class="btn" style="text-decoration: none; display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 1.2rem;">+</span> Créer un Tournoi
+        <a href="{{ path('app_tournoi_new') }}" class="btn btn-primary rounded-pill px-4 fw-bold" style="background-color: var(--accent-purple); border: none;">
+            <i class="fa-solid fa-plus me-2"></i> Créer un tournoi
         </a>
     </div>
 
-    <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); border-radius: 15px; overflow: hidden;">
-        <table style="width: 100%; border-collapse: collapse; text-align: left;">
-            <thead>
-                <tr style="background: rgba(168, 85, 247, 0.05); border-bottom: 1px solid var(--border);">
-                    <th style="padding: 20px; color: var(--purple); font-weight: 600; width: 80px;">ID</th>
-                    <th style="padding: 20px; color: var(--purple); font-weight: 600;">Nom de la compétition</th>
-                    <th style="padding: 20px; color: var(--purple); font-weight: 600;">Jeu</th>
-                    <th style="padding: 20px; color: var(--purple); font-weight: 600;">Date & Heure</th>
-                    <th style="padding: 20px; color: var(--purple); font-weight: 600; text-align: right;">Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-            {% for tournoi in tournois %}
-                <tr style="border-bottom: 1px solid var(--border); transition: background 0.3s;" onmouseover="this.style.background='rgba(255,255,255,0.02)'" onmouseout="this.style.background='transparent'">
-                    <td style="padding: 20px;">
-                        <span class="badge" style="background: rgba(255,255,255,0.05); padding: 5px 10px; border-radius: 6px; font-size: 12px;">#{{ tournoi.id }}</span>
-                    </td>
-                    <td style="padding: 20px;">
-                        <span style="font-weight: 600; color: #fff; font-size: 1.1rem;">{{ tournoi.nom }}</span>
-                    </td>
-                    <td style="padding: 20px;">
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <span style="font-size: 1.2rem;">🎮</span>
-                            <span style="background: linear-gradient(90deg, var(--purple), #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent; font-weight: 700;">
-                                {{ tournoi.jeu.nom }}
-                            </span>
-                        </div>
-                    </td>
-                    <td style="padding: 20px; color: var(--muted);">
-                        <div style="display: flex; align-items: center; gap: 8px;">
-                            <span>📅</span> {{ tournoi.dateTournoi ? tournoi.dateTournoi|date('d/m/Y H:i') : 'Non planifié' }}
-                        </div>
-                    </td>
-                    <td style="padding: 20px; text-align: right;">
-                        <div style="display: flex; justify-content: flex-end; gap: 10px;">
-                            <a href="{{ path('app_tournoi_edit', {'id': tournoi.id}) }}" class="btn-secondary" style="padding: 8px 15px; font-size: 13px; text-decoration: none; border-radius: 8px;">
-                                ⚙️ Modifier
-                            </a>
-                            <a href="{{ path('app_tournoi_show', {'id': tournoi.id}) }}" style="background: rgba(255,255,255,0.05); color: #fff; padding: 8px 15px; border-radius: 8px; text-decoration: none; font-size: 13px; border: 1px solid var(--border);">
-                                👁️ Voir
-                            </a>
-                        </div>
-                    </td>
-                </tr>
-            {% else %}
-                <tr>
-                    <td colspan="5" style="padding: 50px; text-align: center; color: var(--muted);">
-                        <div style="font-size: 3rem; margin-bottom: 10px;">📭</div>
-                        <p>Aucun tournoi n'a été créé pour le moment.</p>
-                    </td>
-                </tr>
-            {% endfor %}
-            </tbody>
-        </table>
+    {# ============ BARRE DE RECHERCHE / FILTRE / TRI ============ #}
+    <div class="card border-0 shadow-sm mb-4" style="background-color: #1a1d26; border-radius: 15px;">
+        <div class="card-body p-4">
+            <form method="GET" action="{{ path('app_tournoi_index') }}">
+                <div class="row g-3 align-items-end">
+                    <div class="col-md-5">
+                        <label class="form-label small text-muted text-uppercase">
+                            <i class="fa-solid fa-magnifying-glass me-1"></i> Recherche
+                        </label>
+                        <input type="text" name="q" class="form-control bg-dark text-white border-secondary" 
+                               placeholder="Rechercher un tournoi..." value="{{ search }}">
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label small text-muted text-uppercase">
+                            <i class="fa-solid fa-gamepad me-1"></i> Filtrer par Jeu
+                        </label>
+                        <select name="jeu" class="form-select bg-dark text-white border-secondary">
+                            <option value="">Tous les jeux</option>
+                            {% for jeu in jeux %}
+                                <option value="{{ jeu.id }}" {{ selectedJeu == jeu.id ? 'selected' : '' }}>{{ jeu.nom }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <label class="form-label small text-muted text-uppercase">
+                            <i class="fa-solid fa-arrow-down-wide-short me-1"></i> Tri Date
+                        </label>
+                        <select name="sort" class="form-select bg-dark text-white border-secondary">
+                            <option value="ASC" {{ sort == 'ASC' ? 'selected' : '' }}>Plus ancien</option>
+                            <option value="DESC" {{ sort == 'DESC' ? 'selected' : '' }}>Plus récent</option>
+                        </select>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="fa-solid fa-filter me-1"></i> Filtrer
+                        </button>
+                    </div>
+                </div>
+            </form>
+        </div>
     </div>
+
+    {# ============ TABLEAU DES TOURNOIS ============ #}
+    <div class="card border-0 shadow-lg overflow-hidden" style="background-color: #1a1d26; border-radius: 15px;">
+        <div class="table-responsive">
+            <table class="table table-dark table-hover align-middle mb-0">
+                <thead style="background-color: rgba(136, 51, 255, 0.1);">
+                    <tr class="text-uppercase small text-muted">
+                        <th class="py-3 ps-4">Tournoi</th>
+                        <th class="py-3">Jeu</th>
+                        <th class="py-3">Date de début</th>
+                        <th class="py-3">Statut</th>
+                        <th class="py-3 text-end pe-4">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                {% for tournoi in tournois %}
+                    <tr>
+                        <td class="ps-4">
+                            <span class="fw-bold text-white">{{ tournoi.nom }}</span>
+                            <div class="small text-muted">ID: #{{ tournoi.id }}</div>
+                        </td>
+                        <td>
+                            {% if tournoi.jeu %}
+                                <span class="badge bg-secondary bg-opacity-25 text-light border border-secondary border-opacity-25">
+                                    <i class="fa-solid fa-gamepad me-1"></i> {{ tournoi.jeu.nom }}
+                                </span>
+                            {% else %}
+                                <span class="text-muted small">Non spécifié</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <div class="d-flex align-items-center text-light">
+                                <i class="fa-regular fa-calendar me-2 text-muted"></i>
+                                {{ tournoi.dateDebut ? tournoi.dateDebut|date('d/m/Y H:i') : '-' }}
+                            </div>
+                        </td>
+                        <td>
+                            {% set statut = tournoi.statut %}
+                            {% if statut == 'À venir' %}
+                                <span class="badge bg-success bg-opacity-25 text-success border border-success border-opacity-25">
+                                    <i class="fa-solid fa-clock me-1"></i> {{ statut }}
+                                </span>
+                            {% elseif statut == 'En cours' %}
+                                <span class="badge bg-warning bg-opacity-25 text-warning border border-warning border-opacity-25">
+                                    <i class="fa-solid fa-bolt me-1"></i> {{ statut }}
+                                </span>
+                            {% else %}
+                                <span class="badge bg-danger bg-opacity-25 text-danger border border-danger border-opacity-25">
+                                    <i class="fa-solid fa-flag-checkered me-1"></i> {{ statut }}
+                                </span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end pe-4">
+                            <div class="btn-group">
+                                <a href="{{ path('app_tournoi_show', {'id': tournoi.id}) }}" class="btn btn-sm btn-icon btn-outline-light border-0" title="Voir">
+                                    <i class="fa-solid fa-eye"></i>
+                                </a>
+                                <a href="{{ path('app_tournoi_edit', {'id': tournoi.id}) }}" class="btn btn-sm btn-icon btn-outline-light border-0" title="Modifier">
+                                    <i class="fa-solid fa-pen"></i>
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="5" class="text-center py-5 text-muted">
+                            <div class="mb-3 display-4 opacity-50">🏆</div>
+                            <p>Aucun tournoi trouvé.</p>
+                            <a href="{{ path('app_tournoi_new') }}" class="btn btn-outline-primary btn-sm rounded-pill mt-2">Créer un tournoi</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
 {% endblock %}

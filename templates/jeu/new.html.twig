@@ -1,52 +1,23 @@
-{% extends 'admin/base_admin.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Ajouter un Jeu • ArenaMind{% endblock %}
+{% block title %}Ajouter un Nouveau Jeu - ArenaMind Admin{% endblock %}
 
 {% block body %}
-    <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 10px;">
-        <span style="font-size: 30px;">🛡️</span>
-        <h1>Ajouter un Nouveau Jeu</h1>
+<div class="container py-4" style="max-width: 800px;">
+    
+    <div class="admin-header">
+        <div class="admin-icon rounded-circle bg-primary bg-opacity-10 p-3 text-primary">
+            <i class="fa-solid fa-shield-halved fa-2x"></i>
+        </div>
+        <div>
+            <h1 class="admin-title mb-0">Ajouter un Nouveau Jeu</h1>
+            <p class="text-secondary mb-0">Remplissez les informations pour ajouter un jeu à la plateforme.</p>
+        </div>
     </div>
-    <p class="subtitle">Remplissez les informations pour ajouter un jeu à la plateforme.</p>
 
-    {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-        
-        {# CHAMP NOM #}
-        <div style="margin-bottom: 20px;">
-            {{ form_label(form.nom, "Nom du Jeu", {'label_attr': {'style': 'display: block; margin-bottom: 8px; font-weight: 600;'}}) }}
-            {{ form_widget(form.nom) }}
-            <div style="color: var(--danger); font-size: 13px; margin-top: 5px;">
-                {{ form_errors(form.nom) }}
-            </div>
-        </div>
+    <div class="mt-5">
+        {{ include('jeu/_form.html.twig') }}
+    </div>
 
-        {# CHAMP DESCRIPTION #}
-        <div style="margin-bottom: 20px;">
-            {{ form_label(form.description, "Description", {'label_attr': {'style': 'display: block; margin-bottom: 8px; font-weight: 600;'}}) }}
-            {{ form_widget(form.description) }}
-            <div style="color: var(--danger); font-size: 13px; margin-top: 5px;">
-                {{ form_errors(form.description) }}
-            </div>
-        </div>
-
-        {# CHAMP IMAGE (Ta demande spécifique) #}
-        <div class="row" style="margin-bottom: 30px;">
-            <div style="flex: 1; display: flex; flex-direction: column;">
-                {{ form_label(form.image, "URL de l'image", {'label_attr': {'style': 'display: block; margin-bottom: 8px; font-weight: 600;'}}) }}
-                {{ form_widget(form.image) }}
-                
-                <div style="color: var(--danger); font-size: 13px; margin-top: 5px;">
-                    {{ form_errors(form.image) }}
-                </div>
-            </div>
-        </div>
-
-        {# BOUTONS D'ACTION #}
-        <div style="display: flex; align-items: center; gap: 20px;">
-            <button type="submit" class="btn">✨ Enregistrer</button>
-            <a href="{{ path('app_jeu_index') }}" style="color: var(--muted); text-decoration: none; font-size: 14px;">Retour à la liste</a>
-        </div>
-
-    {{ form_end(form) }}
-
+</div>
 {% endblock %}

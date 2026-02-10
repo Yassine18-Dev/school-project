@@ -1,55 +1,32 @@
-{% extends 'admin/base_admin.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Modifier Prédiction #{{ prediction.id }} • ArenaMind{% endblock %}
+{% block title %}Modifier Prédiction - ArenaMind Admin{% endblock %}
 
 {% block body %}
-    <div style="margin-bottom: 30px;">
-        <a href="{{ path('app_prediction_index') }}" style="color: #8b949e; text-decoration: none; font-size: 0.9rem;">← Annuler</a>
-        <h1 style="margin-top: 10px;">⚙️ Modifier la prédiction IA</h1>
+<div class="container py-4" style="max-width: 800px;">
+    
+    <div class="admin-header">
+        <div class="admin-icon rounded-circle bg-warning bg-opacity-10 p-3 text-warning">
+            <i class="fa-solid fa-pen-to-square fa-2x"></i>
+        </div>
+        <div>
+            <h1 class="admin-title mb-0">Modifier la Prédiction</h1>
+            <p class="text-secondary mb-0">Correction manuelle des résultats de l'IA.</p>
+        </div>
     </div>
 
-    <div style="background: var(--card-admin); border: 1px solid var(--border); border-radius: 20px; padding: 30px; max-width: 800px; margin: 0 auto;">
-        
-        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-            
-            <div style="margin-bottom: 25px;">
-                {{ form_label(form.tournoi, "Tournoi", {'label_attr': {'style': 'display: block; margin-bottom: 8px; color: var(--purple); font-weight: 600;'}}) }}
-                {{ form_widget(form.tournoi, {'attr': {'style': 'width: 100%; background: #0b0e14; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 10px;'}}) }}
-            </div>
-
-            <div style="margin-bottom: 25px;">
-                {{ form_label(form.vainqueurPredi, "Vainqueur prédit", {'label_attr': {'style': 'display: block; margin-bottom: 8px; color: var(--purple); font-weight: 600;'}}) }}
-                {{ form_widget(form.vainqueurPredi, {'attr': {'style': 'width: 100%; background: #0b0e14; border: 1px solid var(--border); color: white; padding: 12px; border-radius: 10px;'}}) }}
-            </div>
-
-            <div style="margin-bottom: 35px;">
-                {{ form_label(form.confianceAI, "Ajuster l'indice de confiance", {'label_attr': {'style': 'display: block; margin-bottom: 8px; color: var(--purple); font-weight: 600;'}}) }}
-                <div style="display: flex; align-items: center; gap: 15px;">
-                    {{ form_widget(form.confianceAI, {'attr': {'style': 'flex-grow: 1; cursor: pointer;'}}) }}
-                    <output style="font-family: monospace; font-weight: bold; color: #22c55e; min-width: 45px; font-size: 1.2rem;">{{ (prediction.confianceAI * 100)|number_format(0) }}%</output>
-                </div>
-            </div>
-
-            <div style="display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--border); padding-top: 25px;">
-                <div style="display: flex; gap: 15px;">
-                    <button type="submit" class="btn" style="background: var(--purple); color: white; border: none; padding: 12px 25px; border-radius: 10px; font-weight: bold; cursor: pointer;">
-                        💾 Sauvegarder
-                    </button>
-                    {{ include('prediction/_delete_form.html.twig') }}
-                </div>
-                <span style="color: #8b949e; font-size: 0.8rem;">ID: #{{ prediction.id }}</span>
-            </div>
-
-        {{ form_end(form) }}
+    <div class="mt-5">
+        {{ include('prediction/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+    </div>
+    
+    <div class="mt-5 pt-4 border-top border-secondary border-opacity-25">
+        <form method="post" action="{{ path('app_prediction_delete', {'id': prediction.id}) }}" onsubmit="return confirm('Supprimer cette prédiction ?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ prediction.id) }}">
+            <button class="btn btn-danger">
+                <i class="fa-solid fa-trash me-2"></i> Supprimer la prédiction
+            </button>
+        </form>
     </div>
 
-    <script>
-        const range = document.querySelector('input[type="range"]');
-        const output = document.querySelector('output');
-        if (range && output) {
-            range.addEventListener('input', (e) => {
-                output.value = Math.round(e.target.value * 100) + '%';
-            });
-        }
-    </script>
+</div>
 {% endblock %}

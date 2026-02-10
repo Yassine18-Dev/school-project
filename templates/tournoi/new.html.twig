@@ -1,48 +1,23 @@
-{% extends 'admin/base_admin.html.twig' %}
+{% extends 'base.html.twig' %}
 
-{% block title %}Nouveau Tournoi • ArenaMind{% endblock %}
+{% block title %}Nouveau Tournoi - ArenaMind Admin{% endblock %}
 
 {% block body %}
-    <div style="margin-bottom: 30px;">
-        <a href="{{ path('app_tournoi_index') }}" style="color: var(--muted); text-decoration: none; font-size: 0.9rem;">← Retour à la liste</a>
-        <h1 style="margin-top: 10px;">🏆 Créer un nouveau tournoi</h1>
+<div class="container py-4" style="max-width: 800px;">
+    
+    <div class="admin-header">
+        <div class="admin-icon rounded-circle bg-success bg-opacity-10 p-3 text-success">
+            <i class="fa-solid fa-trophy fa-2x"></i>
+        </div>
+        <div>
+            <h1 class="admin-title mb-0">Créer un Tournoi</h1>
+            <p class="text-secondary mb-0">Configurez les paramètres de la nouvelle compétition.</p>
+        </div>
     </div>
 
-    <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border); border-radius: 20px; padding: 30px; max-width: 800px;">
-        
-        {# On active novalidate pour voir nos erreurs Symfony personnalisées #}
-        {{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
-            
-            <div style="margin-bottom: 25px;">
-                {{ form_label(form.nom, null, {'label_attr': {'style': 'display: block; margin-bottom: 8px; color: var(--purple); font-weight: 600;'}}) }}
-                {{ form_widget(form.nom) }}
-                {# Affichage de l'erreur #}
-                <div style="color: #ff4d4d; font-size: 13px; margin-top: 6px; font-weight: 500;">
-                    {{ form_errors(form.nom) }}
-                </div>
-            </div>
-
-            <div style="margin-bottom: 25px;">
-                {{ form_label(form.dateTournoi, "Date et Heure du début", {'label_attr': {'style': 'display: block; margin-bottom: 8px; color: var(--purple); font-weight: 600;'}}) }}
-                {{ form_widget(form.dateTournoi) }}
-                <div style="color: #ff4d4d; font-size: 13px; margin-top: 6px; font-weight: 500;">
-                    {{ form_errors(form.dateTournoi) }}
-                </div>
-            </div>
-
-            <div style="margin-bottom: 35px;">
-                {{ form_label(form.jeu, "Sélection du Jeu", {'label_attr': {'style': 'display: block; margin-bottom: 8px; color: var(--purple); font-weight: 600;'}}) }}
-                {{ form_widget(form.jeu) }}
-                <div style="color: #ff4d4d; font-size: 13px; margin-top: 6px; font-weight: 500;">
-                    {{ form_errors(form.jeu) }}
-                </div>
-            </div>
-
-            <div style="display: flex; gap: 15px; align-items: center; border-top: 1px solid var(--border); padding-top: 25px;">
-                <button type="submit" class="btn">🚀 Publier le tournoi</button>
-                <a href="{{ path('app_tournoi_index') }}" style="color: var(--muted); text-decoration: none;">Annuler</a>
-            </div>
-
-        {{ form_end(form) }}
+    <div class="mt-5">
+        {{ include('tournoi/_form.html.twig') }}
     </div>
+
+</div>
 {% endblock %}
