@@ -30,6 +30,17 @@
         "symfony/validator": "6.4.*",
         "symfony/yaml": "6.4.*",
         "twig/extra-bundle": "^2.12|^3.0",
+        "symfony/monolog-bundle": "*",
+        "symfony/notifier": "6.4.*",
+        "symfony/runtime": "6.4.*",
+        "symfony/security-bundle": "6.4.*",
+        "symfony/stimulus-bundle": "*",
+        "symfony/translation": "6.4.*",
+        "symfony/twig-bundle": "6.4.*",
+        "symfony/ux-turbo": "*",
+        "symfony/validator": "6.4.*",
+        "symfony/yaml": "6.4.*",
+        "twig/extra-bundle": "*",
         "twig/twig": "^2.12|^3.0"
     },
     "config": {
@@ -84,6 +95,8 @@
     "require-dev": {
         "symfony/debug-bundle": "6.4.*",
         "symfony/maker-bundle": "^1.66",
+        "symfony/maker-bundle": "*",
+        "symfony/var-dumper": "6.4.*",
         "symfony/web-profiler-bundle": "6.4.*"
     }
 }
