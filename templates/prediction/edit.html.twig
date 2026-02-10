@@ -1,0 +1,32 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Modifier Prédiction - ArenaMind Admin{% endblock %}
+
+{% block body %}
+<div class="container py-4" style="max-width: 800px;">
+    
+    <div class="admin-header">
+        <div class="admin-icon rounded-circle bg-warning bg-opacity-10 p-3 text-warning">
+            <i class="fa-solid fa-pen-to-square fa-2x"></i>
+        </div>
+        <div>
+            <h1 class="admin-title mb-0">Modifier la Prédiction</h1>
+            <p class="text-secondary mb-0">Correction manuelle des résultats de l'IA.</p>
+        </div>
+    </div>
+
+    <div class="mt-5">
+        {{ include('prediction/_form.html.twig', {'button_label': 'Mettre à jour'}) }}
+    </div>
+    
+    <div class="mt-5 pt-4 border-top border-secondary border-opacity-25">
+        <form method="post" action="{{ path('app_prediction_delete', {'id': prediction.id}) }}" onsubmit="return confirm('Supprimer cette prédiction ?');">
+            <input type="hidden" name="_token" value="{{ csrf_token('delete' ~ prediction.id) }}">
+            <button class="btn btn-danger">
+                <i class="fa-solid fa-trash me-2"></i> Supprimer la prédiction
+            </button>
+        </form>
+    </div>
+
+</div>
+{% endblock %}

@@ -1,0 +1,80 @@
+{% extends 'front/base_front.html.twig' %}
+
+{% block title %}Accueil - ArenaMind{% endblock %}
+
+{% block body %}
+<!-- Hero Section -->
+<section class="position-relative py-5 overflow-hidden">
+    <div class="container py-5">
+        <div class="row align-items-center">
+            <div class="col-lg-6 mb-5 mb-lg-0">
+                <h1 class="display-3 fw-bold mb-4 lh-sm">
+                    Dominez <br>
+                    <span class="text-transparent bg-clip-text" style="background: linear-gradient(90deg, #8833ff, #3b82f6); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">L'Arène E-Sports</span>
+                </h1>
+                <p class="lead text-secondary mb-4">
+                    Rejoignez les meilleurs tournois, découvrez les analyses de notre IA et prouvez votre valeur sur ArenaMind.
+                </p>
+                <div class="d-flex gap-3">
+                    <a href="{{ path('app_front_tournaments') }}" class="btn btn-primary btn-lg px-4">
+                        <i class="fa-solid fa-trophy me-2"></i> Voir les Tournois
+                    </a>
+                    <a href="{{ path('app_front_predictions') }}" class="btn btn-outline-light btn-lg px-4 rounded-pill">
+                        <i class="fa-solid fa-wand-magic-sparkles me-2"></i> Prédictions IA
+                    </a>
+                </div>
+            </div>
+            <div class="col-lg-6 text-center">
+                <div class="position-relative">
+                    <div class="position-absolute top-50 start-50 translate-middle" style="width: 400px; height: 400px; background: radial-gradient(circle, rgba(136,51,255,0.2) 0%, rgba(0,0,0,0) 70%); z-index: -1;"></div>
+                    <i class="fa-solid fa-gamepad display-1 text-white" style="font-size: 15rem; opacity: 0.1;"></i>
+                    <i class="fa-solid fa-headset position-absolute top-50 start-50 translate-middle text-primary" style="font-size: 8rem; animation: float 3s ease-in-out infinite;"></i>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Features Section -->
+<section class="py-5 bg-card">
+    <div class="container text-center">
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="p-4 rounded-4 border border-secondary border-opacity-10 h-100">
+                    <div class="rounded-circle bg-primary bg-opacity-10 d-inline-flex p-3 mb-3 text-primary">
+                        <i class="fa-solid fa-users fa-2x"></i>
+                    </div>
+                    <h3 class="h4 fw-bold">Communauté Active</h3>
+                    <p class="text-muted">Des milliers de joueurs prêts à s'affronter.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 rounded-4 border border-secondary border-opacity-10 h-100">
+                    <div class="rounded-circle bg-success bg-opacity-10 d-inline-flex p-3 mb-3 text-success">
+                        <i class="fa-solid fa-brain fa-2x"></i>
+                    </div>
+                    <h3 class="h4 fw-bold">IA Prédictive</h3>
+                    <p class="text-muted">Des analyses de match basées sur des données réelles.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="p-4 rounded-4 border border-secondary border-opacity-10 h-100">
+                    <div class="rounded-circle bg-warning bg-opacity-10 d-inline-flex p-3 mb-3 text-warning">
+                        <i class="fa-solid fa-trophy fa-2x"></i>
+                    </div>
+                    <h3 class="h4 fw-bold">Tournois Épiques</h3>
+                    <p class="text-muted">Organisez ou rejoignez des compétitions intenses.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+    @keyframes float {
+        0% { transform: translate(-50%, -50%) translateY(0px); }
+        50% { transform: translate(-50%, -50%) translateY(-20px); }
+        100% { transform: translate(-50%, -50%) translateY(0px); }
+    }
+</style>
+{% endblock %}

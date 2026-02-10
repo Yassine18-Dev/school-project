@@ -1,0 +1,93 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}ArenaMind - Tournois E-sport{% endblock %}
+
+{% block body %}
+<style>
+    :root {
+        --primary: #a855f7;
+        --secondary: #3b82f6;
+        --bg-dark: #0f172a;
+        --card-bg: #1e293b;
+        --text-muted: #94a3b8;
+    }
+
+    body { background-color: var(--bg-dark); color: white; font-family: 'Inter', sans-serif; }
+
+    .tournament-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+        gap: 25px;
+        padding: 40px;
+        max-width: 1300px;
+        margin: 0 auto;
+    }
+
+    .esport-card {
+        background: var(--card-bg);
+        border-radius: 16px;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+        overflow: hidden;
+        transition: 0.3s ease;
+    }
+
+    .esport-card:hover { transform: translateY(-5px); border-color: var(--primary); }
+
+    .card-banner {
+        height: 160px;
+        background-size: cover;
+        background-position: center;
+        position: relative;
+    }
+
+    /* Style de la barre de progression */
+    .progress-container { background: #334155; border-radius: 10px; height: 8px; margin: 15px 0; overflow: hidden; }
+    .progress-bar { 
+        height: 100%; 
+        background: linear-gradient(90deg, var(--primary), var(--secondary)); 
+        box-shadow: 0 0 10px rgba(168, 85, 247, 0.5);
+        transition: width 1s ease-in-out;
+    }
+
+    .btn-join {
+        width: 100%; padding: 12px; border: none; border-radius: 8px;
+        background: linear-gradient(90deg, var(--primary), var(--secondary));
+        color: white; font-weight: bold; cursor: pointer;
+    }
+</style>
+
+<div class="tournament-grid">
+    {% for tournoi in tournois %}
+        <div class="esport-card">
+            {# Image du jeu #}
+            <div class="card-banner" style="background-image: url('{{ tournoi.jeu.image }}');">
+                <div style="position: absolute; bottom: 10px; left: 10px; background: rgba(0,0,0,0.6); padding: 5px 10px; border-radius: 5px; font-size: 0.8rem;">
+                    {{ tournoi.jeu.nom }}
+                </div>
+            </div>
+
+            <div style="padding: 20px;">
+                <h2 style="margin: 0; font-size: 1.3rem;">{{ tournoi.nom }}</h2>
+                
+                {# COMPTE À REBOURS #}
+                <div class="countdown-box" data-date="{{ tournoi.dateTournoi|date('Y-m-d H:i:s') }}" style="margin: 15px 0; color: var(--primary); font-weight: bold; font-family: monospace;">
+                    Chargement du timer...
+                </div>
+
+                {# BARRE DE PROGRESSION (Simulée pour l'instant) #}
+                <div style="display: flex; justify-content: space-between; font-size: 0.8rem; color: var(--text-muted);">
+                    <span>Inscriptions</span>
+                    <span>12 / 16</span>
+                </div>
+                <div class="progress-container">
+                    <div class="progress-bar" style="width: 75%;"></div>
+                </div>
+
+                <button class="btn-join">S'INSCRIRE</button>
+            </div>
+        </div>
+    {% endfor %}
+</div>
+
+{% include 'front/_scripts_countdown.html.twig' %}
+{% endblock %}

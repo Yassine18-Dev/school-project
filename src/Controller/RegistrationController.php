@@ -48,7 +48,7 @@ class RegistrationController extends AbstractController
             $em->flush();
 
             $this->addFlash('success', 'Account created! You can login.');
-            return $this->redirectToRoute('ui_login');
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('user/register.html.twig');

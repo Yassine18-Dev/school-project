@@ -1,0 +1,23 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Ajouter un Nouveau Jeu - ArenaMind Admin{% endblock %}
+
+{% block body %}
+<div class="container py-4" style="max-width: 800px;">
+    
+    <div class="admin-header">
+        <div class="admin-icon rounded-circle bg-primary bg-opacity-10 p-3 text-primary">
+            <i class="fa-solid fa-shield-halved fa-2x"></i>
+        </div>
+        <div>
+            <h1 class="admin-title mb-0">Ajouter un Nouveau Jeu</h1>
+            <p class="text-secondary mb-0">Remplissez les informations pour ajouter un jeu à la plateforme.</p>
+        </div>
+    </div>
+
+    <div class="mt-5">
+        {{ include('jeu/_form.html.twig') }}
+    </div>
+
+</div>
+{% endblock %}

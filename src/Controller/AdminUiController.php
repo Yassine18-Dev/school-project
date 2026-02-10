@@ -2,9 +2,6 @@
 
 namespace App\Controller;
 
-use App\Entity\User;
-use App\Repository\UserRepository;
-use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -12,64 +9,63 @@ use Symfony\Component\Routing\Annotation\Route;
 
 class AdminUiController extends AbstractController
 {
-    #[Route('/admin', name: 'ui_admin', methods: ['GET'])]
-    public function dashboard(UserRepository $repo): Response
+    private function requireAdmin(Request $request): ?Response
     {
-        $total = $repo->count([]);
+        if ($request->query->get('as') !== 'admin') {
+            return $this->render('admin/forbidden.html.twig');
+        }
+        return null;
+    }
 
-        $active = $repo->count(['status' => User::STATUS_ACTIVE]);
-        $suspended = $repo->count(['status' => User::STATUS_SUSPENDED]);
-        $banned = $repo->count(['status' => User::STATUS_BANNED]);
+    #[Route('/admin', name: 'ui_admin', methods: ['GET'])]
+    public function dashboard(Request $request): Response
+    {
+        if ($resp = $this->requireAdmin($request)) return $resp;
 
-        return $this->render('admin/dashboard.html.twig', [
-            'stats' => [
-                'users' => $total,
-                'active' => $active,
-                'suspended' => $suspended,
-                'banned' => $banned,
-            ],
+        $stats = [
+            'users' => 124,
+            'reports' => 3,
+            'activeToday' => 57,
+        ];
+
+        return $this->render('admin/index.html.twig', [
+            'stats' => $stats,
         ]);
     }
 
     #[Route('/admin/users', name: 'ui_admin_users', methods: ['GET'])]
-    public function users(Request $request, UserRepository $repo, EntityManagerInterface $em): Response
+    public function users(Request $request): Response
     {
-        // ACTIONS status
+        if ($resp = $this->requireAdmin($request)) return $resp;
+
+        $users = [
+            ['id'=>1,'username'=>'PlayerOne','email'=>'playerone@arenamind.tn','role'=>'PLAYER','status'=>'ACTIVE'],
+            ['id'=>2,'username'=>'CaptainX','email'=>'captainx@arenamind.tn','role'=>'CAPTAIN','status'=>'ACTIVE'],
+            ['id'=>3,'username'=>'ToxicGuy','email'=>'toxic@arenamind.tn','role'=>'PLAYER','status'=>'SUSPENDED'],
+            ['id'=>4,'username'=>'Spammer','email'=>'spam@arenamind.tn','role'=>'FAN','status'=>'BANNED'],
+        ];
+
+        // UI actions (activate/suspend/ban)
         $action = $request->query->get('action');
-        $id = $request->query->getInt('id');
-
+        $id = $request->query->get('id');
         if ($action && $id) {
-            $u = $repo->find($id);
-
-            if ($u instanceof User) {
-                if ($action === 'activate') $u->setStatus(User::STATUS_ACTIVE);
-                if ($action === 'suspend')  $u->setStatus(User::STATUS_SUSPENDED);
-                if ($action === 'ban')      $u->setStatus(User::STATUS_BANNED);
-
-                $em->flush();
-                $this->addFlash('success', "User #$id updated: $action");
-            }
+            $this->addFlash('success', "Action '$action' applied to user #$id (UI mode).");
         }
-
-        // LISTE + tri simple
-        $users = $repo->findBy([], ['id' => 'DESC']);
 
         return $this->render('admin/users.html.twig', [
             'users' => $users,
-            'q' => '',
-            'sort' => 'id',
-            'dir' => 'DESC',
         ]);
     }
 
     #[Route('/admin/users/{id}', name: 'ui_admin_user_show', methods: ['GET'])]
-    public function show(int $id, UserRepository $repo): Response
+    public function showUser(Request $request, int $id): Response
     {
-        $u = $repo->find($id);
-        if (!$u) {
-            throw $this->createNotFoundException('User not found');
-        }
+        if ($resp = $this->requireAdmin($request)) return $resp;
 
-        return $this->render('admin/user_show.html.twig', ['u' => $u]);
+        $u = ['id'=>$id,'username'=>'PlayerOne','email'=>'playerone@arenamind.tn','role'=>'PLAYER','status'=>'ACTIVE'];
+
+        return $this->render('admin/user_show.html.twig', [
+            'u' => $u,
+        ]);
     }
 }

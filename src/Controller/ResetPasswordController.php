@@ -93,7 +93,7 @@ class ResetPasswordController extends AbstractController
             $em->flush();
 
             $this->addFlash('success', 'Password updated. Now login.');
-            return $this->redirectToRoute('ui_login');
+            return $this->redirectToRoute('app_login');
         }
 
         return $this->render('user/reset_password.html.twig', ['valid' => true]);

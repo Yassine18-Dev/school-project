@@ -1,0 +1,54 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Connexion - ArenaMind{% endblock %}
+
+{% block body %}
+<div class="container d-flex justify-content-center align-items-center" style="min-height: 85vh;">
+    <div class="gaming-card animate__animated animate__fadeIn">
+        {# Icône de profil néon identique à l'image #}
+        <div class="text-center mb-3">
+            <div class="d-inline-block rounded-circle p-3" style="background: rgba(136, 51, 255, 0.1); border: 1px solid var(--accent-purple);">
+                <i class="fa-solid fa-user-shield fa-2x" style="color: var(--accent-purple);"></i>
+            </div>
+        </div>
+
+        <h1 class="text-center mb-1" style="font-family: 'Orbitron', sans-serif; font-weight: 700; color: white; letter-spacing: 2px;">LOGIN</h1>
+        <p class="text-center text-muted small mb-4">Access your ArenaMind account</p>
+
+        <form method="post">
+            {% if error is defined and error %}
+                <div class="alert alert-danger border-0 bg-danger bg-opacity-10 text-danger small">
+                    {{ error.messageKey|trans(error.messageData, 'security') }}
+                </div>
+            {% endif %}
+
+            <div class="mb-3">
+                <label for="inputEmail" class="small text-muted mb-1 d-flex align-items-center">
+                    <i class="fa-solid fa-envelope me-2"></i> Email
+                </label>
+                <input type="email" value="{{ last_username|default('') }}" name="email" id="inputEmail" class="form-control gaming-input" placeholder="player@email.com" required autofocus>
+            </div>
+
+            <div class="mb-4">
+                <label for="inputPassword" class="small text-muted mb-1 d-flex align-items-center">
+                    <i class="fa-solid fa-lock me-2"></i> Password
+                </label>
+                <input type="password" name="password" id="inputPassword" class="form-control gaming-input" placeholder="••••••••" required>
+            </div>
+
+            <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+
+            <button type="submit" class="btn btn-gradient w-100 mb-3">
+                <i class="fa-solid fa-right-to-bracket me-2"></i> Login
+            </button>
+
+            <div class="text-center">
+                <a href="#" class="text-info small text-decoration-none">Forgot password?</a>
+                <p class="text-muted small mt-3">
+                    New here? <a href="#" class="text-white text-decoration-none fw-bold">Create account</a>
+                </p>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}

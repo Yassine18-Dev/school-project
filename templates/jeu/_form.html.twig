@@ -1,0 +1,32 @@
+{# templates/jeu/_form.html.twig #}
+{{ form_start(form, {'attr': {'novalidate': 'novalidate'}}) }}
+    
+    {# Customizing form row rendering for a cleaner look #}
+    {% for field in form %}
+        {% if field.vars.name != '_token' %}
+            <div class="mb-4">
+                {{ form_label(field, null, {'label_attr': {'class': 'form-label'}}) }}
+                {{ form_widget(field, {'attr': {'class': 'form-control', 'placeholder': field.vars.attr.placeholder|default('')}}) }}
+                <div class="form-text text-danger">
+                    {{ form_errors(field) }}
+                </div>
+                {% if field.vars.help is defined and field.vars.help %}
+                    <div class="form-text">{{ field.vars.help }}</div>
+                {% endif %}
+            </div>
+        {% endif %}
+    {% endfor %}
+
+    <div class="d-flex align-items-center gap-3 mt-5">
+        <button class="btn btn-primary">
+            <i class="fa-solid fa-sparkles me-2"></i> {{ button_label|default('Enregistrer') }}
+        </button>
+        <a href="{{ path('app_jeu_index') }}" class="btn btn-link">
+            Retour à la liste
+        </a>
+    </div>
+
+    <!-- Render hidden fields like _token -->
+    {{ form_rest(form) }}
+
+{{ form_end(form) }}

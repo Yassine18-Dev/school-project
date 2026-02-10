@@ -1,17 +1,114 @@
+{# templates/base.html.twig #}
 <!DOCTYPE html>
 <html>
     <head>
         <meta charset="UTF-8">
-        <title>{% block title %}Welcome!{% endblock %}</title>
-        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>⚫️</text><text y=%221.3em%22 x=%220.2em%22 font-size=%2276%22 fill=%22%23fff%22>sf</text></svg>">
-        {% block stylesheets %}
-        {% endblock %}
+        <title>{% block title %}ArenaMind{% endblock %}</title>
+        <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 128 128%22><text y=%221.2em%22 font-size=%2296%22>🛡️</text></svg>">
+        
+        {# Intégration Google Fonts et FontAwesome #}
+        <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Inter:wght@300;400;600&display=swap" rel="stylesheet">
+        <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+        <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
 
-        {% block javascripts %}
-            {% block importmap %}{{ importmap('app') }}{% endblock %}
-        {% endblock %}
+        <style>
+            :root {
+                --bg-dark: #0b0e11;         /* Fond principal */
+                --card-bg: #151921;         /* Fond des formulaires */
+                --accent-purple: #8833ff;   /* Violet Néon */
+                --accent-blue: #3388ff;     /* Bleu Néon */
+                --text-gray: #a0a0a0;
+            }
+
+            body {
+                background: radial-gradient(circle at top right, #1a1033 0%, #0b0e11 60%);
+                color: white;
+                font-family: 'Inter', sans-serif;
+                min-height: 100vh;
+                margin: 0;
+            }
+
+            /* --- Navbar Style ArenaMind --- */
+            .navbar {
+                background: rgba(0, 0, 0, 0.2) !important;
+                backdrop-filter: blur(10px);
+                padding: 15px 30px;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            }
+
+            .navbar-brand {
+                font-family: 'Orbitron', sans-serif;
+                font-weight: bold;
+                color: var(--accent-purple) !important;
+                text-transform: uppercase;
+                letter-spacing: 2px;
+            }
+
+            /* --- Carte Gaming --- */
+            .gaming-card {
+                background: var(--card-bg);
+                border: 1px solid rgba(255, 255, 255, 0.05);
+                border-radius: 15px;
+                padding: 40px;
+                box-shadow: 0 0 30px rgba(136, 51, 255, 0.15);
+                max-width: 450px;
+                width: 100%;
+            }
+
+            /* --- Inputs --- */
+            .gaming-input {
+                background: rgba(0,0,0,0.3) !important;
+                border: 1px solid #2a2e35 !important;
+                color: white !important;
+                border-radius: 8px !important;
+                padding: 12px !important;
+            }
+
+            .gaming-input:focus {
+                border-color: var(--accent-purple) !important;
+                box-shadow: 0 0 10px rgba(136, 51, 255, 0.3) !important;
+                outline: none;
+            }
+
+            /* --- Boutons Dégradés --- */
+            .btn-gradient {
+                background: linear-gradient(90deg, var(--accent-purple), var(--accent-blue));
+                border: none;
+                color: white;
+                font-weight: bold;
+                font-family: 'Orbitron', sans-serif;
+                border-radius: 8px;
+                padding: 12px;
+                width: 100%;
+                transition: 0.3s;
+                text-transform: uppercase;
+            }
+
+            .btn-gradient:hover {
+                box-shadow: 0 0 15px var(--accent-purple);
+                transform: translateY(-2px);
+                color: white;
+            }
+        </style>
+        
+        {% block stylesheets %}{% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        <nav class="navbar navbar-expand-lg">
+            <div class="container-fluid">
+                <a class="navbar-brand" href="/"><i class="fas fa-gamepad me-2"></i>ArenaMind</a>
+                <div class="d-flex">
+                    <a href="/login" class="btn btn-outline-light btn-sm rounded-pill px-3 me-2">Connexion</a>
+                    <a href="/register" class="btn btn-gradient btn-sm rounded-pill px-3">Rejoindre</a>
+                </div>
+            </div>
+        </nav>
+
+        <main>
+            {% block body %}{% endblock %}
+        </main>
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+        {% block javascripts %}{% endblock %}
     </body>
 </html>
