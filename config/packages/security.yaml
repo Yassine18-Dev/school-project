@@ -20,7 +20,7 @@ security:
       form_login:
         login_path: ui_login
         check_path: ui_login
-        default_target_path: ui_profile
+        default_target_path: ui_home
       logout:
         path: ui_logout
         target: ui_login

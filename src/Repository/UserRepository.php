@@ -30,4 +30,32 @@ class UserRepository extends ServiceEntityRepository
 
         return $qb->orderBy('u.'.$sort, $dir);
     }
+    public function countOnlineUsers(int $minutes = 10): int
+{
+    $since = (new \DateTimeImmutable())->modify("-{$minutes} minutes");
+
+    return (int) $this->createQueryBuilder('u')
+        ->select('COUNT(u.id)')
+        ->andWhere('u.lastActivityAt IS NOT NULL')
+        ->andWhere('u.lastActivityAt >= :since')
+        ->setParameter('since', $since)
+        ->getQuery()
+        ->getSingleScalarResult();
+}
+
+public function countActiveOnDate(\DateTimeImmutable $date): int
+{
+    $start = $date->setTime(0, 0, 0);
+    $end   = $date->setTime(23, 59, 59);
+
+    return (int) $this->createQueryBuilder('u')
+        ->select('COUNT(u.id)')
+        ->andWhere('u.lastActivityAt IS NOT NULL')
+        ->andWhere('u.lastActivityAt BETWEEN :start AND :end')
+        ->setParameter('start', $start)
+        ->setParameter('end', $end)
+        ->getQuery()
+        ->getSingleScalarResult();
+}
+
 }

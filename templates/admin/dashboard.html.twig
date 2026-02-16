@@ -1,16 +1,123 @@
 {% extends 'admin/base_admin.html.twig' %}
-{% block title %}Admin Dashboard{% endblock %}
+{% block title %}Admin • Dashboard{% endblock %}
 
 {% block body %}
-<h1>Dashboard</h1>
-<p class="subtitle">Statistiques des utilisateurs (DB)</p>
+<div class="dash">
 
-<div class="row">
-  <span class="badge">Total: {{ stats.users }}</span>
-  <span class="badge">Active: {{ stats.active }}</span>
-  <span class="badge">Suspended: {{ stats.suspended }}</span>
-  <span class="badge">Banned: {{ stats.banned }}</span>
+  <div class="dash-head">
+    <div>
+      <h1 class="dash-title"><i class="fa-solid fa-chart-line"></i> Admin Dashboard</h1>
+      <p class="dash-sub">Overview: users, statuses, and activity.</p>
+    </div>
+    <div class="dash-pill">
+      <i class="fa-solid fa-circle-dot"></i>
+      Online now: <b>{{ stats.online }}</b>
+    </div>
+  </div>
+
+  <div class="kpis">
+    <div class="kpi">
+      <div class="kpi-ico"><i class="fa-solid fa-users"></i></div>
+      <div class="kpi-val">{{ stats.users }}</div>
+      <div class="kpi-lbl">Total Users</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-ico ok"><i class="fa-solid fa-user-check"></i></div>
+      <div class="kpi-val">{{ stats.active }}</div>
+      <div class="kpi-lbl">Active</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-ico warn"><i class="fa-solid fa-user-clock"></i></div>
+      <div class="kpi-val">{{ stats.suspended }}</div>
+      <div class="kpi-lbl">Suspended</div>
+    </div>
+
+    <div class="kpi">
+      <div class="kpi-ico bad"><i class="fa-solid fa-user-slash"></i></div>
+      <div class="kpi-val">{{ stats.banned }}</div>
+      <div class="kpi-lbl">Banned</div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div class="panel">
+      <div class="panel-title"><i class="fa-solid fa-chart-pie"></i> Users by status</div>
+      <canvas id="statusChart" height="170"></canvas>
+    </div>
+
+    <div class="panel">
+      <div class="panel-title"><i class="fa-solid fa-wave-square"></i> Activity (last 7 days)</div>
+      <canvas id="activityChart" height="170"></canvas>
+      <p class="hint">Based on <b>lastActivityAt</b> (users seen that day).</p>
+    </div>
+  </div>
 </div>
 
-<a class="btn" href="{{ path('ui_admin_users') }}">Manage Users</a>
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+  const statusCtx = document.getElementById('statusChart');
+  new Chart(statusCtx, {
+    type: 'doughnut',
+    data: {
+      labels: ['Active','Suspended','Banned'],
+      datasets: [{
+        data: [{{ stats.active }}, {{ stats.suspended }}, {{ stats.banned }}],
+        borderWidth: 1
+      }]
+    },
+    options: {
+      plugins: { legend: { labels: { color: '#fff' } } }
+    }
+  });
+
+  const activityCtx = document.getElementById('activityChart');
+  new Chart(activityCtx, {
+    type: 'line',
+    data: {
+      labels: {{ chart.days|json_encode|raw }},
+      datasets: [{
+        label: 'Active users/day',
+        data: {{ chart.activity|json_encode|raw }},
+        tension: 0.35,
+        fill: false
+      }]
+    },
+    options: {
+      scales: {
+        x: { ticks: { color: '#cbd5f5' }, grid: { color: 'rgba(49,46,129,.25)' } },
+        y: { ticks: { color: '#cbd5f5' }, grid: { color: 'rgba(49,46,129,.25)' } }
+      },
+      plugins: { legend: { labels: { color: '#fff' } } }
+    }
+  });
+</script>
+
+<style>
+  .dash{max-width:1200px;margin:0 auto;}
+  .dash-head{display:flex;justify-content:space-between;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:14px;}
+  .dash-title{margin:0;color:var(--purple);font-weight:1000;display:flex;gap:10px;align-items:center;}
+  .dash-sub{margin:6px 0 0;color:var(--muted);font-size:13px}
+  .dash-pill{padding:10px 12px;border-radius:999px;background:rgba(59,130,246,.10);border:1px solid rgba(59,130,246,.25);font-weight:900;color:#dbeafe;display:flex;gap:10px;align-items:center;}
+
+  .kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:12px;}
+  .kpi{background:rgba(20,24,60,.55);border:1px solid rgba(49,46,129,.45);border-radius:18px;padding:14px;box-shadow:0 0 35px rgba(168,85,247,.08);}
+  .kpi-ico{width:44px;height:44px;border-radius:14px;display:flex;align-items:center;justify-content:center;background:rgba(168,85,247,.12);border:1px solid rgba(168,85,247,.25);margin-bottom:10px;}
+  .kpi-ico.ok{background:rgba(22,163,74,.10);border-color:rgba(22,163,74,.25)}
+  .kpi-ico.warn{background:rgba(245,158,11,.10);border-color:rgba(245,158,11,.25)}
+  .kpi-ico.bad{background:rgba(220,38,38,.10);border-color:rgba(220,38,38,.25)}
+  .kpi-val{font-size:26px;font-weight:1100;color:#fff;}
+  .kpi-lbl{color:var(--muted);font-size:12px;font-weight:800;margin-top:2px;}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .panel{background:rgba(5,8,20,.35);border:1px solid rgba(49,46,129,.35);border-radius:18px;padding:14px;}
+  .panel-title{font-weight:1000;color:#dbeafe;display:flex;gap:10px;align-items:center;margin-bottom:10px;}
+  .hint{margin:10px 0 0;color:var(--muted);font-size:12px}
+
+  @media (max-width: 900px){
+    .kpis{grid-template-columns:1fr 1fr;}
+    .grid{grid-template-columns:1fr;}
+  }
+</style>
 {% endblock %}

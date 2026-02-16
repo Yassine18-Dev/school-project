@@ -2,43 +2,137 @@
 {% block title %}{{ title }}{% endblock %}
 
 {% block body %}
-<h1>{{ title }}</h1>
-<p class="subtitle">Validation côté serveur (pas de JS)</p>
+<div class="am-page">
 
-{{ form_start(form, { attr: { novalidate: 'novalidate' } }) }}
-  <div class="row" style="align-items:flex-start;">
-    <div style="flex:1;min-width:260px;">
-      <label>Username</label>
-      {{ form_widget(form.username) }}
-      {{ form_errors(form.username) }}
-
-      <label>Email</label>
-      {{ form_widget(form.email) }}
-      {{ form_errors(form.email) }}
-
-      <label>Role</label>
-      {{ form_widget(form.roleType) }}
-
-      <label>Status</label>
-      {{ form_widget(form.status) }}
+  <div class="am-head">
+    <div>
+      <h1 class="am-title">{{ title }}</h1>
+      <p class="am-subtitle">Validation côté serveur • aucun JS • formulaire admin</p>
     </div>
 
-    <div style="flex:1;min-width:260px;">
-      <label>New Password</label>
-      {{ form_widget(form.newPassword) }}
-      {{ form_errors(form.newPassword) }}
-
-      <p class="subtitle" style="text-align:left;">
-        * Create: password obligatoire<br>
-        * Edit: laisse vide pour ne pas changer
-      </p>
-    </div>
+    <a class="am-btn am-btn-ghost" href="{{ path('ui_admin_users') }}">
+      ← Back to users
+    </a>
   </div>
 
-  <button>Save</button>
-{{ form_end(form) }}
+  <div class="am-card">
+    {{ form_start(form, { attr: { novalidate: 'novalidate', class: 'am-form' } }) }}
 
-<div class="row">
-  <a class="btn2" href="{{ path('ui_admin_users') }}">Back</a>
+      {# Erreurs globales (si tu ajoutes plus tard des contraintes cross-field) #}
+      {{ form_errors(form) }}
+
+      <div class="am-grid">
+        <!-- LEFT -->
+        <div class="am-block">
+          <div class="am-section-title">Account</div>
+
+          <div class="am-field">
+            <div class="am-label-row">
+              <label class="am-label">Username</label>
+              <span class="am-hint">3–50 caractères</span>
+            </div>
+            {{ form_widget(form.username, { attr: { class: 'am-input', placeholder: 'ex: yassine' } }) }}
+            <div class="am-error">{{ form_errors(form.username) }}</div>
+          </div>
+
+          <div class="am-field">
+            <div class="am-label-row">
+              <label class="am-label">Email</label>
+              <span class="am-hint">Doit être unique</span>
+            </div>
+            {{ form_widget(form.email, { attr: { class: 'am-input', placeholder: 'ex: user@email.com' } }) }}
+            <div class="am-error">{{ form_errors(form.email) }}</div>
+          </div>
+
+          <div class="am-row2">
+            <div class="am-field">
+              <div class="am-label-row">
+                <label class="am-label">Role type</label>
+                <span class="am-hint">PLAYER / CAPTAIN / FAN</span>
+              </div>
+              {{ form_widget(form.roleType, { attr: { class: 'am-select' } }) }}
+              <div class="am-error">{{ form_errors(form.roleType) }}</div>
+            </div>
+
+            <div class="am-field">
+              <div class="am-label-row">
+                <label class="am-label">Status</label>
+                <span class="am-hint">ACTIVE / SUSPENDED / BANNED</span>
+              </div>
+              {{ form_widget(form.status, { attr: { class: 'am-select' } }) }}
+              <div class="am-error">{{ form_errors(form.status) }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- RIGHT -->
+        <div class="am-block">
+          <div class="am-section-title">Security</div>
+
+          <div class="am-alert">
+            <div class="am-alert-title">Password rules</div>
+            <div class="am-alert-text">
+              <b>Create:</b> mot de passe obligatoire.<br>
+              <b>Edit:</b> laisse vide pour ne pas changer.
+            </div>
+          </div>
+
+          <div class="am-field">
+            <div class="am-label-row">
+              <label class="am-label">New password</label>
+              <span class="am-hint">Min 6 caractères</span>
+            </div>
+            {{ form_widget(form.newPassword, { attr: { class: 'am-input', placeholder: '••••••••' } }) }}
+            <div class="am-error">{{ form_errors(form.newPassword) }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="am-actions">
+        <button class="am-btn am-btn-primary" type="submit">💾 Save</button>
+        <a class="am-btn am-btn-ghost" href="{{ path('ui_admin_users') }}">Cancel</a>
+      </div>
+
+    {{ form_end(form) }}
+  </div>
+
 </div>
+
+<style>
+  .am-page{max-width:1100px;margin:0 auto;}
+  .am-head{display:flex;justify-content:space-between;gap:12px;align-items:flex-end;margin-bottom:14px;flex-wrap:wrap;}
+  .am-title{margin:0;color:var(--purple);font-size:28px;font-weight:900;}
+  .am-subtitle{margin:6px 0 0;color:var(--muted);font-size:13px;}
+  .am-card{background:rgba(20,24,60,.55);border:1px solid rgba(49,46,129,.45);border-radius:18px;padding:16px;box-shadow:0 0 40px rgba(168,85,247,.15);}
+  .am-form{margin:0;}
+  .am-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;align-items:start;}
+  .am-block{background:rgba(5,8,20,.35);border:1px solid rgba(49,46,129,.35);border-radius:16px;padding:14px;}
+  .am-section-title{font-weight:900;color:#dbeafe;margin-bottom:10px;}
+  .am-field{margin-bottom:12px;}
+  .am-label-row{display:flex;justify-content:space-between;gap:10px;align-items:center;margin-bottom:6px;}
+  .am-label{font-weight:800;color:#cbd5f5;font-size:13px;}
+  .am-hint{font-size:12px;color:var(--muted);}
+  .am-input,.am-select{
+    width:100%;padding:12px;background:#0b0f2e;border:1px solid rgba(49,46,129,.65);
+    border-radius:12px;color:#fff;outline:none;
+  }
+  .am-input:focus,.am-select:focus{border-color:rgba(168,85,247,.8);box-shadow:0 0 0 3px rgba(168,85,247,.15);}
+  .am-row2{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+  .am-error{margin-top:6px;color:#fecaca;font-size:13px;}
+  .am-alert{background:rgba(59,130,246,.10);border:1px solid rgba(59,130,246,.25);border-radius:14px;padding:12px;margin-bottom:12px;}
+  .am-alert-title{font-weight:900;color:#93c5fd;margin-bottom:6px;}
+  .am-alert-text{color:#cbd5f5;font-size:13px;line-height:1.5;}
+  .am-actions{display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap;margin-top:12px;}
+  .am-btn{
+    display:inline-flex;align-items:center;justify-content:center;
+    padding:10px 14px;border-radius:14px;text-decoration:none;font-weight:900;cursor:pointer;border:1px solid transparent;
+  }
+  .am-btn-primary{background:linear-gradient(90deg,var(--purple),var(--blue));color:#fff;border:none;}
+  .am-btn-ghost{background:rgba(168,85,247,.10);border:1px solid rgba(168,85,247,.25);color:#fff;}
+  .am-btn:hover{opacity:.94;transform:translateY(-1px);}
+  @media (max-width: 900px){
+    .am-grid{grid-template-columns:1fr;}
+    .am-row2{grid-template-columns:1fr;}
+  }
+</style>
 {% endblock %}
